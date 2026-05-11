@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BikeTourMap from "@/components/bike-tour-map";
+import SaveGroupToStorage from "@/components/save-group-to-storage";
 import { groupGul } from "@/lib/tour-data";
 
 export const metadata = {
@@ -10,6 +11,7 @@ export const metadata = {
 export default function GroupGulPage() {
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+      <SaveGroupToStorage group={groupGul.name} />
       <header className="space-y-3">
         <p className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900">
           Grupp Gul

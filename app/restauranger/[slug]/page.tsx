@@ -60,6 +60,7 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
       <RestaurantFeedbackForm
         key={restaurant.slug}
         restaurantSlug={restaurant.slug}
+        restaurantName={restaurant.name}
       />
     </main>
   );
