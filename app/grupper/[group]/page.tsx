@@ -94,7 +94,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
           className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${badgeStyle}`}
         >
           Grupp {groupRoute.name}
-        </p>
+        </h1>
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
           Cykeltur mellan tre restauranger
         </h1>
@@ -113,7 +113,9 @@ export default async function GroupPage({ params }: GroupPageProps) {
         />
 
         <aside className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Stopp</h2>
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            Stopp
+          </h2>
           <ol className="mt-4 space-y-4">
             {resolvedRestaurants.map(({ restaurant, ref }, index) => (
               <li key={restaurant.slug}>
@@ -134,17 +136,23 @@ export default async function GroupPage({ params }: GroupPageProps) {
                   <p className="text-base font-semibold text-blue-700 dark:text-blue-400">
                     {restaurant.name}
                   </p>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">{restaurant.address}</p>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {restaurant.address}
+                  </p>
                 </Link>
               </li>
             ))}
           </ol>
           <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-800">
-            <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-200">Mål</p>
+            <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+              Mål
+            </p>
             <p className="text-sm text-zinc-600 dark:text-zinc-300">
               {groupRoute.endDestination.name}
             </p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">Ingen fast tid</p>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+              Ingen fast tid
+            </p>
           </div>
         </aside>
       </section>
