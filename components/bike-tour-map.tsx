@@ -142,7 +142,7 @@ export default function BikeTourMap({
           }
         } catch {
           setError(
-            "Kunde inte hamta cykelvag just nu. Visar en direktlinje mellan stoppen.",
+            "Kunde inte hämta cykelväg just nu. Visar en direktlinje mellan stoppen.",
           );
         }
 
@@ -154,7 +154,7 @@ export default function BikeTourMap({
 
         map.fitBounds(boundsPoints, { padding: [24, 24] });
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Ett okant fel uppstod.");
+        setError(err instanceof Error ? err.message : "Ett okänt fel uppstod.");
       }
     };
 
@@ -172,10 +172,10 @@ export default function BikeTourMap({
     <div className="space-y-3">
       <div
         ref={mapRef}
-        className="h-[440px] w-full rounded-2xl border border-zinc-200 shadow-sm"
+        className="h-[440px] w-full rounded-2xl border border-zinc-200 shadow-sm dark:border-zinc-700"
       />
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      <p className="text-sm text-zinc-600">
+      {error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}
+      <p className="text-sm text-zinc-600 dark:text-zinc-400">
         Karta och rutt visas med OpenStreetMap och fri cykel-routing.
       </p>
     </div>

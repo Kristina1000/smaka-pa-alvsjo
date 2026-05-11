@@ -10,7 +10,7 @@ export default function Home() {
       <div className="flex justify-center">
         <Image
           src="/smaka-pa-alvsjo.jpg"
-          alt="Smaka pa Alvsjo"
+          alt="Smaka på Älvsjö"
           width={320}
           height={320}
           priority
@@ -41,9 +41,7 @@ export default function Home() {
               {group.name}
             </h2>
             <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
-              {group.slug === "gul"
-                ? "Start vid Bromsvagen 46 med tre restaurangstopp."
-                : "Planerad runda med hardkodade restaurangstopp."}
+              Start vid Bromsvägen 46 med tre restaurangstopp
             </p>
           </Link>
         ))}

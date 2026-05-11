@@ -64,9 +64,9 @@ export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "casa-del-planka",
     name: "La Casa de Planka",
-    address: "Klockhusgrand 1A, 125 49 Alvsjo, Sweden",
+    address: "Klockhusgränd 1A, 125 49 Älvsjö, Sweden",
     description:
-      "En avslappnad stoppplats med fokus pa rejal mat i hjartat av Alvsjo.",
+      "En avslappnad stoppplats med fokus på rejäl mat i hjärtat av Älvsjö.",
     coordinates: {
       lat: 59.2810323,
       lng: 18.0004265,
@@ -75,9 +75,9 @@ export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "erssons",
     name: "Erssons",
-    address: "Fruangstorget 6, 129 52 Hagersten, Sweden",
+    address: "Fruängstorget 6, 129 52 Hägersten, Sweden",
     description:
-      "Ett klassiskt stopp med fisk och delikatesser, perfekt pa turen vidare.",
+      "Ett klassiskt stopp med fisk och delikatesser, perfekt på turen vidare.",
     coordinates: {
       lat: 59.2868,
       lng: 17.9642,
@@ -86,9 +86,9 @@ export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "teso",
     name: "TESO Sushi & Ramen",
-    address: "Kabelverksgatan 16, 125 48 Alvsjo, Sweden",
+    address: "Kabelverksgatan 16, 125 48 Älvsjö, Sweden",
     description:
-      "Sista stoppet pa den gula cykelslingan med nara tillbaka till startomradet.",
+      "Sista stoppet på den gula cykelslingan med nära tillbaka till startområdet.",
     coordinates: {
       lat: 59.2823119,
       lng: 18.0028268,
@@ -99,7 +99,7 @@ export const allRestaurants: readonly Restaurant[] = [
     name: "VÅR PIZZA",
     address: "Johan Skyttes Väg 218, 125 34 Älvsjö",
     description:
-      "En pizzeria med fokus pa kvalitet och hantverksmässig framställning.",
+      "En pizzeria med fokus på kvalitet och hantverksmässig framställning.",
     coordinates: {
       lat: 59.2777344,
       lng: 18.0017943,
@@ -110,7 +110,7 @@ export const allRestaurants: readonly Restaurant[] = [
     name: "Köttverket",
     address: "Johan Skyttes Väg 203, 125 34 Älvsjö",
     description:
-      "En specialiserad köttbutik och restaurang med fokus pa lokala och högkvalitativa produkter.",
+      "En specialiserad köttbutik och restaurang med fokus på lokala och högkvalitativa produkter.",
     coordinates: {
       lat: 59.2777346,
       lng: 18.005564,
@@ -120,7 +120,7 @@ export const allRestaurants: readonly Restaurant[] = [
     slug: "rinos",
     name: "Sushi by Rino",
     address: "Svartlösavägen 52, 125 33 Älvsjö",
-    description: "Japansk cuisine med fokus pa färsk sushi och ramen.",
+    description: "Japansk mat med fokus på färsk sushi och ramen.",
     coordinates: {
       lat: 59.2842178,
       lng: 17.9855931,
