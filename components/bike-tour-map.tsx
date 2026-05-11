@@ -14,6 +14,9 @@ type BikeTourMapProps = {
   restaurants: readonly Restaurant[];
 };
 
+const LOCATION_MAX_AGE_MS = 5000;
+const LOCATION_TIMEOUT_MS = 10000;
+
 export default function BikeTourMap({
   startAddress,
   startCoordinates,
@@ -111,8 +114,8 @@ export default function BikeTourMap({
             },
             {
               enableHighAccuracy: true,
-              maximumAge: 5000,
-              timeout: 10000,
+              maximumAge: LOCATION_MAX_AGE_MS,
+              timeout: LOCATION_TIMEOUT_MS,
             },
           );
         };
