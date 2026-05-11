@@ -35,6 +35,10 @@ export default function BikeTourMap({
 
     let cancelled = false;
     let mapInstance: import("leaflet").Map | null = null;
+    let locationWatchId: number | null = null;
+    let userLocationMarker: import("leaflet").CircleMarker | null = null;
+    let userAccuracyCircle: import("leaflet").Circle | null = null;
+    let hasCenteredOnUser = false;
 
     const run = async () => {
       try {
@@ -47,6 +51,89 @@ export default function BikeTourMap({
           zoomControl: true,
         });
         mapInstance = map;
+
+        const updateUserPosition = (position: GeolocationPosition) => {
+          const { latitude, longitude, accuracy } = position.coords;
+          const latLng = L.latLng(latitude, longitude);
+
+          if (!userLocationMarker) {
+            userLocationMarker = L.circleMarker(latLng, {
+              radius: 8,
+              color: "#1d4ed8",
+              fillColor: "#3b82f6",
+              fillOpacity: 0.9,
+              weight: 2,
+            }).addTo(map);
+          } else {
+            userLocationMarker.setLatLng(latLng);
+          }
+
+          if (!userAccuracyCircle) {
+            userAccuracyCircle = L.circle(latLng, {
+              radius: accuracy,
+              color: "#60a5fa",
+              fillColor: "#93c5fd",
+              fillOpacity: 0.2,
+              weight: 1,
+            }).addTo(map);
+          } else {
+            userAccuracyCircle.setLatLng(latLng);
+            userAccuracyCircle.setRadius(accuracy);
+          }
+
+          if (!hasCenteredOnUser) {
+            map.flyTo(latLng, Math.max(map.getZoom(), 15));
+            hasCenteredOnUser = true;
+          }
+        };
+
+        const startLocationWatch = () => {
+          if (!("geolocation" in navigator)) {
+            setError("Din enhet stödjer inte platstjänster.");
+            return;
+          }
+
+          if (locationWatchId !== null) {
+            return;
+          }
+
+          setError(null);
+          locationWatchId = navigator.geolocation.watchPosition(
+            (position) => {
+              updateUserPosition(position);
+            },
+            (locationError) => {
+              const message =
+                locationError.code === locationError.PERMISSION_DENIED
+                  ? "Tillåt platsåtkomst för att visa din position på kartan."
+                  : "Kunde inte hämta din position just nu.";
+              setError(message);
+            },
+            {
+              enableHighAccuracy: true,
+              maximumAge: 5000,
+              timeout: 10000,
+            },
+          );
+        };
+
+        const locationControl = L.control({ position: "topright" });
+        locationControl.onAdd = () => {
+          const container = L.DomUtil.create("div", "leaflet-bar");
+          const button = L.DomUtil.create(
+            "button",
+            "map-location-button",
+            container,
+          ) as HTMLButtonElement;
+          button.type = "button";
+          button.title = "Visa min position";
+          button.setAttribute("aria-label", "Visa min position");
+          button.textContent = "📍";
+          L.DomEvent.disableClickPropagation(container);
+          L.DomEvent.on(button, "click", startLocationWatch);
+          return container;
+        };
+        locationControl.addTo(map);
 
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "&copy; OpenStreetMap contributors",
@@ -162,6 +249,9 @@ export default function BikeTourMap({
 
     return () => {
       cancelled = true;
+      if (locationWatchId !== null) {
+        navigator.geolocation.clearWatch(locationWatchId);
+      }
       if (mapInstance) {
         mapInstance.remove();
       }

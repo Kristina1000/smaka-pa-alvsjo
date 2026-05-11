@@ -41,3 +41,20 @@ body {
     0 0 0 3px #9c9ea3cc,
     0 2px 8px #433e3eaa;
 }
+
+.map-location-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.map-location-button:hover {
+  background: #f4f4f5;
+}
