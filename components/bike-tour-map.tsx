@@ -16,6 +16,10 @@ type BikeTourMapProps = {
 
 const LOCATION_MAX_AGE_MS = 5000;
 const LOCATION_TIMEOUT_MS = 10000;
+const USER_LOCATION_MARKER_STROKE = "#1d4ed8";
+const USER_LOCATION_MARKER_FILL = "#3b82f6";
+const USER_ACCURACY_STROKE = "#60a5fa";
+const USER_ACCURACY_FILL = "#93c5fd";
 
 export default function BikeTourMap({
   startAddress,
@@ -63,8 +67,8 @@ export default function BikeTourMap({
           if (!userLocationMarker) {
             userLocationMarker = L.circleMarker(latLng, {
               radius: 8,
-              color: "#1d4ed8",
-              fillColor: "#3b82f6",
+              color: USER_LOCATION_MARKER_STROKE,
+              fillColor: USER_LOCATION_MARKER_FILL,
               fillOpacity: 0.9,
               weight: 2,
             }).addTo(map);
@@ -75,8 +79,8 @@ export default function BikeTourMap({
           if (!userAccuracyCircle) {
             userAccuracyCircle = L.circle(latLng, {
               radius: accuracy,
-              color: "#60a5fa",
-              fillColor: "#93c5fd",
+              color: USER_ACCURACY_STROKE,
+              fillColor: USER_ACCURACY_FILL,
               fillOpacity: 0.2,
               weight: 1,
             }).addTo(map);
@@ -118,7 +122,11 @@ export default function BikeTourMap({
               const message =
                 locationError.code === locationError.PERMISSION_DENIED
                   ? "Tillåt platsåtkomst för att visa din position på kartan."
-                  : "Kunde inte hämta din position just nu.";
+                  : locationError.code === locationError.TIMEOUT
+                    ? "Platsförfrågan tog för lång tid. Försök igen."
+                    : locationError.code === locationError.POSITION_UNAVAILABLE
+                      ? "Din position kunde inte hittas. Kontrollera platsinställningar och försök igen."
+                      : "Kunde inte hämta din position just nu.";
               setError(message);
             },
             {
