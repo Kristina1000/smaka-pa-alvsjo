@@ -35,6 +35,22 @@ export type GroupRestaurantRef = {
   visitTime: string;
 };
 
+export type GroupRoute = {
+  name: string;
+  startAddress: string;
+  startCoordinates: {
+    lat: number;
+    lng: number;
+  };
+  endDestination: RouteLocation;
+  restaurants: readonly GroupRestaurantRef[];
+};
+
+export type GroupTheme = {
+  headerBadgeClassName: string;
+  timeBadgeClassName: string;
+};
+
 export type RouteLocation = {
   name: string;
   address: string;
@@ -226,10 +242,57 @@ export const allGroupDefinitions: readonly GroupDefinition[] = [
   { slug: "vit", name: "Vit" },
 ] as const;
 
+export const groupsBySlug: Record<GroupSlug, GroupRoute> = {
+  gul: groupGul,
+  rosa: groupRosa,
+  rod: groupRod,
+  gron: groupGron,
+  silver: groupSilver,
+  bla: groupBla,
+  vit: groupVit,
+};
+
+export const groupThemeBySlug: Record<GroupSlug, GroupTheme> = {
+  gul: {
+    headerBadgeClassName: "bg-amber-100 text-amber-900",
+    timeBadgeClassName: "text-amber-700 bg-amber-50",
+  },
+  rosa: {
+    headerBadgeClassName: "bg-pink-100 text-pink-900",
+    timeBadgeClassName: "text-pink-700 bg-pink-50",
+  },
+  rod: {
+    headerBadgeClassName: "bg-red-100 text-red-900",
+    timeBadgeClassName: "text-red-700 bg-red-50",
+  },
+  gron: {
+    headerBadgeClassName: "bg-green-100 text-green-900",
+    timeBadgeClassName: "text-green-700 bg-green-50",
+  },
+  silver: {
+    headerBadgeClassName: "bg-zinc-200 text-zinc-900",
+    timeBadgeClassName: "text-zinc-700 bg-zinc-100",
+  },
+  bla: {
+    headerBadgeClassName: "bg-blue-100 text-blue-900",
+    timeBadgeClassName: "text-blue-700 bg-blue-50",
+  },
+  vit: {
+    headerBadgeClassName: "bg-zinc-50 text-zinc-900 border border-zinc-300",
+    timeBadgeClassName: "text-zinc-700 bg-zinc-50 border border-zinc-300",
+  },
+};
+
 export function getGroupDefinitionBySlug(
   groupSlug: GroupSlug,
 ): GroupDefinition | undefined {
   return allGroupDefinitions.find((group) => group.slug === groupSlug);
+}
+
+export function getGroupRouteBySlug(
+  groupSlug: GroupSlug,
+): GroupRoute | undefined {
+  return groupsBySlug[groupSlug];
 }
 
 export const restaurantsBySlug: Record<string, Restaurant> =

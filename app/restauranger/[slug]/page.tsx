@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { allRestaurants, restaurantsBySlug } from "@/lib/tour-data";
+import {
+  allGroupDefinitions,
+  allRestaurants,
+  restaurantsBySlug,
+} from "@/lib/tour-data";
 import RestaurantFeedbackForm from "@/components/restaurant-feedback-form";
 
 type RestaurantPageProps = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ group?: string | string[] }>;
 };
 
 export async function generateStaticParams() {
@@ -13,13 +18,31 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function RestaurantPage({ params }: RestaurantPageProps) {
+export default async function RestaurantPage({
+  params,
+  searchParams,
+}: RestaurantPageProps) {
   const { slug } = await params;
+  const query = await searchParams;
   const restaurant = restaurantsBySlug[slug];
 
   if (!restaurant) {
     notFound();
   }
+
+  const requestedGroup =
+    typeof query.group === "string"
+      ? query.group
+      : Array.isArray(query.group)
+        ? query.group[0]
+        : undefined;
+
+  const activeGroup = allGroupDefinitions.find(
+    (group) => group.slug === requestedGroup,
+  );
+
+  const backGroupSlug = activeGroup?.slug ?? "gul";
+  const backGroupName = activeGroup?.name ?? "Gul";
 
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     restaurant.address,
@@ -28,15 +51,15 @@ export default async function RestaurantPage({ params }: RestaurantPageProps) {
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
       <Link
-        href="/grupper/gul"
+        href={`/grupper/${backGroupSlug}`}
         className="text-sm font-medium text-blue-700 hover:text-blue-800"
       >
-        Tillbaka till Grupp Gul
+        Tillbaka till Grupp {backGroupName}
       </Link>
 
       <header className="space-y-3">
         <p className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900">
-          Grupp Gul
+          Grupp {backGroupName}
         </p>
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
           {restaurant.name}
