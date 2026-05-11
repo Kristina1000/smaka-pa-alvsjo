@@ -97,7 +97,7 @@ export default function BikeTourMap({
 
         const startLocationWatch = () => {
           if (!("geolocation" in navigator)) {
-            setError("Din enhet stödjer inte platstjänster.");
+            setError("Din enhet stöder inte platstjänster.");
             return;
           }
 
