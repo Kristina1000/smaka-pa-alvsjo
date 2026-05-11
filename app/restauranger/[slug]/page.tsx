@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { groupGul, restaurantsBySlug } from "@/lib/tour-data";
+import { allRestaurants, restaurantsBySlug } from "@/lib/tour-data";
 import RestaurantFeedbackForm from "@/components/restaurant-feedback-form";
 
 type RestaurantPageProps = {
@@ -8,7 +8,7 @@ type RestaurantPageProps = {
 };
 
 export async function generateStaticParams() {
-  return groupGul.restaurants.map((restaurant) => ({
+  return allRestaurants.map((restaurant) => ({
     slug: restaurant.slug,
   }));
 }
