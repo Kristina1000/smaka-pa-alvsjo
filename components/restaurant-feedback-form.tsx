@@ -128,7 +128,7 @@ export default function RestaurantFeedbackForm({
   restaurantSlug,
   restaurantName,
 }: RestaurantFeedbackFormProps) {
-  const [rating, setRating] = useState<number>(7);
+  const [rating, setRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [entries, setEntries] = useState<FeedbackEntry[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -163,8 +163,13 @@ export default function RestaurantFeedbackForm({
       return;
     }
 
+    if (rating === null) {
+      setStatusMessage("Välj ett betyg mellan 1 och 10.");
+      return;
+    }
+
     if (rating < 1 || rating > 10) {
-      setStatusMessage("Betyg maste vara mellan 1 och 10.");
+      setStatusMessage("Betyg måste vara mellan 1 och 10.");
       return;
     }
 
@@ -207,7 +212,7 @@ export default function RestaurantFeedbackForm({
     }
 
     setSubmitting(false);
-    setRating(7);
+    setRating(null);
     setComment("");
   };
 
@@ -229,7 +234,8 @@ export default function RestaurantFeedbackForm({
           >
             {Array.from({ length: 10 }, (_, index) => {
               const value = index + 1;
-              const isSelected = rating >= value;
+              const isSelected = (rating ?? 0) >= value;
+              const isChecked = rating === value;
 
               return (
                 <button
@@ -237,7 +243,7 @@ export default function RestaurantFeedbackForm({
                   type="button"
                   onClick={() => setRating(value)}
                   role="radio"
-                  aria-checked={isSelected}
+                  aria-checked={isChecked}
                   aria-label={`${value} av 10`}
                   className={`inline-flex aspect-square w-full items-center justify-center rounded border text-xs leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 sm:text-sm dark:focus-visible:ring-offset-zinc-900 ${
                     isSelected
@@ -251,7 +257,7 @@ export default function RestaurantFeedbackForm({
             })}
           </div>
           <p className="text-xs text-zinc-600 dark:text-zinc-400">
-            1 = sämst, 10 = bäst. Valt betyg: {rating}/10.
+            1 = sämst, 10 = bäst. Valt betyg: {rating ?? "-"}/10.
           </p>
         </fieldset>
 
