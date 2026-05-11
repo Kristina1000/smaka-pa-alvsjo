@@ -37,6 +37,7 @@ export default function GroupVitPage() {
         <BikeTourMap
           startAddress={groupVit.startAddress}
           startCoordinates={groupVit.startCoordinates}
+          endDestination={groupVit.endDestination}
           restaurants={resolvedRestaurants}
         />
 
@@ -66,6 +67,13 @@ export default function GroupVitPage() {
               );
             })}
           </ol>
+          <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+            <p className="text-sm font-semibold text-zinc-700">Mål</p>
+            <p className="text-sm text-zinc-600">
+              {groupVit.endDestination.name}
+            </p>
+            <p className="text-xs text-zinc-500">Ingen fast tid</p>
+          </div>
         </aside>
       </section>
     </main>

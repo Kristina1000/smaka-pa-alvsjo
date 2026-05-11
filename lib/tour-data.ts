@@ -35,6 +35,15 @@ export type GroupRestaurantRef = {
   visitTime: string;
 };
 
+export type RouteLocation = {
+  name: string;
+  address: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+};
+
 export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "casa-del-planka",
@@ -113,13 +122,33 @@ export const allRestaurants: readonly Restaurant[] = [
   },
 ] as const;
 
-export const groupGul = {
-  name: "Gul",
-  startAddress: "Bromsvägen 46, 125 57 Älvsjö, Sweden",
-  startCoordinates: {
+export const sharedStartLocation: RouteLocation = {
+  name: "Start",
+  address: "Bromsvägen 46, 125 57 Älvsjö, Sweden",
+  coordinates: {
     lat: 59.2756006,
     lng: 17.9811132,
   },
+};
+
+export const sharedEndDestination: RouteLocation = {
+  name: "Herrängens Gård",
+  address: "Herrängens Gård, 125 54 Älvsjö, Sweden",
+  coordinates: {
+    lat: 59.2733581,
+    lng: 17.9607217,
+  },
+};
+
+const sharedRouteDefaults = {
+  startAddress: sharedStartLocation.address,
+  startCoordinates: sharedStartLocation.coordinates,
+  endDestination: sharedEndDestination,
+} as const;
+
+export const groupGul = {
+  name: "Gul",
+  ...sharedRouteDefaults,
   restaurants: [
     { slug: "var-pizza", visitTime: "16:00" },
     { slug: "beirut", visitTime: "16:45" },
@@ -129,11 +158,7 @@ export const groupGul = {
 
 export const groupRod = {
   name: "Röd",
-  startAddress: "Bromsvägen 46, 125 57 Älvsjö, Sweden",
-  startCoordinates: {
-    lat: 59.2756006,
-    lng: 17.9811132,
-  },
+  ...sharedRouteDefaults,
   restaurants: [
     { slug: "rinos", visitTime: "16:00" },
     { slug: "kottverket", visitTime: "16:45" },
@@ -143,11 +168,7 @@ export const groupRod = {
 
 export const groupGron = {
   name: "Grön",
-  startAddress: "Bromsvägen 46, 125 57 Älvsjö, Sweden",
-  startCoordinates: {
-    lat: 59.2756006,
-    lng: 17.9811132,
-  },
+  ...sharedRouteDefaults,
   restaurants: [
     { slug: "teso", visitTime: "16:00" },
     { slug: "var-pizza", visitTime: "16:45" },
@@ -157,11 +178,7 @@ export const groupGron = {
 
 export const groupSilver = {
   name: "Silver",
-  startAddress: "Bromsvägen 46, 125 57 Älvsjö, Sweden",
-  startCoordinates: {
-    lat: 59.2756006,
-    lng: 17.9811132,
-  },
+  ...sharedRouteDefaults,
   restaurants: [
     { slug: "kottverket", visitTime: "16:00" },
     { slug: "rinos", visitTime: "16:45" },
@@ -171,11 +188,7 @@ export const groupSilver = {
 
 export const groupBla = {
   name: "Blå",
-  startAddress: "Bromsvägen 46, 125 57 Älvsjö, Sweden",
-  startCoordinates: {
-    lat: 59.2756006,
-    lng: 17.9811132,
-  },
+  ...sharedRouteDefaults,
   restaurants: [
     { slug: "erssons", visitTime: "16:00" },
     { slug: "teso", visitTime: "16:45" },
@@ -185,11 +198,7 @@ export const groupBla = {
 
 export const groupRosa = {
   name: "Rosa",
-  startAddress: "Bromsvägen 46, 125 57 Älvsjö, Sweden",
-  startCoordinates: {
-    lat: 59.2756006,
-    lng: 17.9811132,
-  },
+  ...sharedRouteDefaults,
   restaurants: [
     { slug: "beirut", visitTime: "16:00" },
     { slug: "casa-del-planka", visitTime: "16:45" },
@@ -199,11 +208,7 @@ export const groupRosa = {
 
 export const groupVit = {
   name: "Vit",
-  startAddress: "Bromsvägen 46, 125 57 Älvsjö, Sweden",
-  startCoordinates: {
-    lat: 59.2756006,
-    lng: 17.9811132,
-  },
+  ...sharedRouteDefaults,
   restaurants: [
     { slug: "casa-del-planka", visitTime: "16:00" },
     { slug: "erssons", visitTime: "16:45" },

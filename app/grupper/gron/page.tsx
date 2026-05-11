@@ -38,6 +38,7 @@ export default function GroupGronPage() {
         <BikeTourMap
           startAddress={groupGron.startAddress}
           startCoordinates={groupGron.startCoordinates}
+          endDestination={groupGron.endDestination}
           restaurants={resolvedRestaurants}
         />
 
@@ -67,6 +68,13 @@ export default function GroupGronPage() {
               );
             })}
           </ol>
+          <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+            <p className="text-sm font-semibold text-zinc-700">Mål</p>
+            <p className="text-sm text-zinc-600">
+              {groupGron.endDestination.name}
+            </p>
+            <p className="text-xs text-zinc-500">Ingen fast tid</p>
+          </div>
         </aside>
       </section>
     </main>

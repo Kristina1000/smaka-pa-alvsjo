@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { Restaurant } from "@/lib/tour-data";
+import type { Restaurant, RouteLocation } from "@/lib/tour-data";
 
 type BikeTourMapProps = {
   startAddress: string;
@@ -10,12 +10,14 @@ type BikeTourMapProps = {
     lat: number;
     lng: number;
   };
+  endDestination: RouteLocation;
   restaurants: readonly Restaurant[];
 };
 
 export default function BikeTourMap({
   startAddress,
   startCoordinates,
+  endDestination,
   restaurants,
 }: BikeTourMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -66,9 +68,17 @@ export default function BikeTourMap({
             iconAnchor: [12, 12],
           });
 
+        const endIcon = L.divIcon({
+          className: "map-pin map-pin-stop",
+          html: "M",
+          iconSize: [24, 24],
+          iconAnchor: [12, 12],
+        });
+
         const routeCoordinates: Array<{ lat: number; lng: number }> = [
           startCoordinates,
           ...restaurants.map((restaurant) => restaurant.coordinates),
+          endDestination.coordinates,
         ];
 
         const boundsPoints = routeCoordinates.map((point) => [
@@ -94,6 +104,14 @@ export default function BikeTourMap({
             router.push(`/restauranger/${restaurant.slug}`);
           });
         });
+
+        L.marker(
+          [endDestination.coordinates.lat, endDestination.coordinates.lng],
+          {
+            icon: endIcon,
+            title: `Mål: ${endDestination.name}`,
+          },
+        ).addTo(map);
 
         const osrmCoordinates = routeCoordinates
           .map((point) => `${point.lng},${point.lat}`)
@@ -148,7 +166,7 @@ export default function BikeTourMap({
         mapInstance.remove();
       }
     };
-  }, [restaurants, router, startAddress, startCoordinates]);
+  }, [endDestination, restaurants, router, startAddress, startCoordinates]);
 
   return (
     <div className="space-y-3">

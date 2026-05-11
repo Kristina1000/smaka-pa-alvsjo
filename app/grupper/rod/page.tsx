@@ -38,6 +38,7 @@ export default function GroupRodPage() {
         <BikeTourMap
           startAddress={groupRod.startAddress}
           startCoordinates={groupRod.startCoordinates}
+          endDestination={groupRod.endDestination}
           restaurants={resolvedRestaurants}
         />
 
@@ -67,6 +68,13 @@ export default function GroupRodPage() {
               );
             })}
           </ol>
+          <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+            <p className="text-sm font-semibold text-zinc-700">Mål</p>
+            <p className="text-sm text-zinc-600">
+              {groupRod.endDestination.name}
+            </p>
+            <p className="text-xs text-zinc-500">Ingen fast tid</p>
+          </div>
         </aside>
       </section>
     </main>

@@ -37,6 +37,7 @@ export default function GroupRosaPage() {
         <BikeTourMap
           startAddress={groupRosa.startAddress}
           startCoordinates={groupRosa.startCoordinates}
+          endDestination={groupRosa.endDestination}
           restaurants={resolvedRestaurants}
         />
 
@@ -66,6 +67,13 @@ export default function GroupRosaPage() {
               );
             })}
           </ol>
+          <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+            <p className="text-sm font-semibold text-zinc-700">Mål</p>
+            <p className="text-sm text-zinc-600">
+              {groupRosa.endDestination.name}
+            </p>
+            <p className="text-xs text-zinc-500">Ingen fast tid</p>
+          </div>
         </aside>
       </section>
     </main>
