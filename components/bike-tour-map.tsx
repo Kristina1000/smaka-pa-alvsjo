@@ -42,6 +42,7 @@ export default function BikeTourMap({
     let userLocationMarker: import("leaflet").CircleMarker | null = null;
     let userAccuracyCircle: import("leaflet").Circle | null = null;
     let hasCenteredOnUser = false;
+    let removeLocationClickHandler: (() => void) | null = null;
 
     const run = async () => {
       try {
@@ -97,6 +98,9 @@ export default function BikeTourMap({
           }
 
           if (locationWatchId !== null) {
+            if (userLocationMarker) {
+              map.flyTo(userLocationMarker.getLatLng(), Math.max(map.getZoom(), 15));
+            }
             return;
           }
 
@@ -106,6 +110,11 @@ export default function BikeTourMap({
               updateUserPosition(position);
             },
             (locationError) => {
+              if (locationWatchId !== null) {
+                navigator.geolocation.clearWatch(locationWatchId);
+                locationWatchId = null;
+              }
+
               const message =
                 locationError.code === locationError.PERMISSION_DENIED
                   ? "Tillåt platsåtkomst för att visa din position på kartan."
@@ -133,7 +142,13 @@ export default function BikeTourMap({
           button.setAttribute("aria-label", "Visa min position");
           button.textContent = "📍";
           L.DomEvent.disableClickPropagation(container);
-          L.DomEvent.on(button, "click", startLocationWatch);
+          const onLocationButtonClick = () => {
+            startLocationWatch();
+          };
+          L.DomEvent.on(button, "click", onLocationButtonClick);
+          removeLocationClickHandler = () => {
+            L.DomEvent.off(button, "click", onLocationButtonClick);
+          };
           return container;
         };
         locationControl.addTo(map);
@@ -254,6 +269,9 @@ export default function BikeTourMap({
       cancelled = true;
       if (locationWatchId !== null) {
         navigator.geolocation.clearWatch(locationWatchId);
+      }
+      if (removeLocationClickHandler) {
+        removeLocationClickHandler();
       }
       if (mapInstance) {
         mapInstance.remove();
