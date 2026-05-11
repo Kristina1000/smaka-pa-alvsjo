@@ -1,28 +1,7 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -37,13 +16,28 @@ body {
   font-weight: 700;
   height: 24px;
   width: 24px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 2px 6px #00000033;
 }
 
 .map-pin-start {
-  background: #2563eb;
+  background: #16a34a;
+  height: 30px;
+  width: 30px;
+  box-shadow:
+    0 0 0 3px #16a34a66,
+    0 2px 8px #00000033;
 }
 
 .map-pin-stop {
   background: #f59e0b;
+}
+
+.map-pin-finish {
+  color: #111827;
+  background-color: #ffffff;
+  height: 30px;
+  width: 30px;
+  box-shadow:
+    0 0 0 3px #9c9ea3cc,
+    0 2px 8px #433e3eaa;
 }

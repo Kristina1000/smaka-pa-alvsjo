@@ -90,18 +90,11 @@ export default async function GroupPage({ params }: GroupPageProps) {
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
       <SaveGroupToStorage group={groupRoute.name} />
       <header className="space-y-3">
-        <p
+        <h1
           className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${badgeStyle}`}
         >
           Grupp {groupRoute.name}
-        </p>
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-          Cykeltur mellan tre restauranger
         </h1>
-        <p className="max-w-3xl text-zinc-600">
-          Start vid {groupRoute.startAddress}. Klicka pa markorerna i kartan for
-          att oppna varje restaurangsida.
-        </p>
       </header>
 
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">

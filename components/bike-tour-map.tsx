@@ -69,10 +69,10 @@ export default function BikeTourMap({
           });
 
         const endIcon = L.divIcon({
-          className: "map-pin map-pin-stop",
+          className: "map-pin map-pin-finish",
           html: "M",
           iconSize: [24, 24],
-          iconAnchor: [12, 12],
+          iconAnchor: [15, 15],
         });
 
         const routeCoordinates: Array<{ lat: number; lng: number }> = [
