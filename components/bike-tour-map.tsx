@@ -41,14 +41,15 @@ export default function BikeTourMap({
           return;
         }
 
-        mapInstance = L.map(mapRef.current, {
+        const map = L.map(mapRef.current, {
           zoomControl: true,
         });
+        mapInstance = map;
 
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "&copy; OpenStreetMap contributors",
           maxZoom: 19,
-        }).addTo(mapInstance);
+        }).addTo(map);
 
         const startIcon = L.divIcon({
           className: "map-pin map-pin-start",
@@ -78,7 +79,7 @@ export default function BikeTourMap({
         L.marker([startCoordinates.lat, startCoordinates.lng], {
           icon: startIcon,
           title: `Start: ${startAddress}`,
-        }).addTo(mapInstance);
+        }).addTo(map);
 
         restaurants.forEach((restaurant, index) => {
           const marker = L.marker(
@@ -87,7 +88,7 @@ export default function BikeTourMap({
               icon: stopIcon(index),
               title: restaurant.name,
             },
-          ).addTo(mapInstance);
+          ).addTo(map);
 
           marker.on("click", () => {
             router.push(`/restauranger/${restaurant.slug}`);
@@ -131,9 +132,9 @@ export default function BikeTourMap({
           color: "#f59e0b",
           weight: 5,
           opacity: 0.95,
-        }).addTo(mapInstance);
+        }).addTo(map);
 
-        mapInstance.fitBounds(boundsPoints, { padding: [24, 24] });
+        map.fitBounds(boundsPoints, { padding: [24, 24] });
       } catch (err) {
         setError(err instanceof Error ? err.message : "Ett okant fel uppstod.");
       }
