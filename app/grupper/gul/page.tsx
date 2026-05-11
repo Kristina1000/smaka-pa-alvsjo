@@ -1,0 +1,55 @@
+import Link from "next/link";
+import BikeTourMap from "@/components/bike-tour-map";
+import { groupGul } from "@/lib/tour-data";
+
+export const metadata = {
+  title: "Grupp Gul | Smaka pa Alvsjo",
+  description: "Cykeltur for grupp Gul med tre restaurangstopp i Alvsjo.",
+};
+
+export default function GroupGulPage() {
+  return (
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+      <header className="space-y-3">
+        <p className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900">
+          Grupp Gul
+        </p>
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
+          Cykeltur mellan tre restauranger
+        </h1>
+        <p className="max-w-3xl text-zinc-600">
+          Start vid {groupGul.startAddress}. Klicka pa markorerna i kartan for
+          att oppna varje restaurangsida.
+        </p>
+      </header>
+
+      <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+        <BikeTourMap
+          startAddress={groupGul.startAddress}
+          startCoordinates={groupGul.startCoordinates}
+          restaurants={groupGul.restaurants}
+        />
+
+        <aside className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <h2 className="text-lg font-semibold text-zinc-900">Stopp</h2>
+          <ol className="mt-4 space-y-4">
+            {groupGul.restaurants.map((restaurant, index) => (
+              <li key={restaurant.slug} className="space-y-1">
+                <p className="text-sm font-semibold text-zinc-500">
+                  Stopp {index + 1}
+                </p>
+                <Link
+                  className="text-base font-semibold text-blue-700 hover:text-blue-800"
+                  href={`/restauranger/${restaurant.slug}`}
+                >
+                  {restaurant.name}
+                </Link>
+                <p className="text-sm text-zinc-600">{restaurant.address}</p>
+              </li>
+            ))}
+          </ol>
+        </aside>
+      </section>
+    </main>
+  );
+}
