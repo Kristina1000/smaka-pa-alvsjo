@@ -254,32 +254,32 @@ export const groupsBySlug: Record<GroupSlug, GroupRoute> = {
 
 export const groupThemeBySlug: Record<GroupSlug, GroupTheme> = {
   gul: {
-    headerBadgeClassName: "bg-amber-100 text-amber-900",
-    timeBadgeClassName: "text-amber-700 bg-amber-50",
+    headerBadgeClassName: "bg-amber-100 text-amber-900 dark:bg-amber-900/30 dark:text-amber-300",
+    timeBadgeClassName: "text-amber-700 bg-amber-50 dark:text-amber-300 dark:bg-amber-900/30",
   },
   rosa: {
-    headerBadgeClassName: "bg-pink-100 text-pink-900",
-    timeBadgeClassName: "text-pink-700 bg-pink-50",
+    headerBadgeClassName: "bg-pink-100 text-pink-900 dark:bg-pink-900/30 dark:text-pink-300",
+    timeBadgeClassName: "text-pink-700 bg-pink-50 dark:text-pink-300 dark:bg-pink-900/30",
   },
   rod: {
-    headerBadgeClassName: "bg-red-100 text-red-900",
-    timeBadgeClassName: "text-red-700 bg-red-50",
+    headerBadgeClassName: "bg-red-100 text-red-900 dark:bg-red-900/30 dark:text-red-300",
+    timeBadgeClassName: "text-red-700 bg-red-50 dark:text-red-300 dark:bg-red-900/30",
   },
   gron: {
-    headerBadgeClassName: "bg-green-100 text-green-900",
-    timeBadgeClassName: "text-green-700 bg-green-50",
+    headerBadgeClassName: "bg-green-100 text-green-900 dark:bg-green-900/30 dark:text-green-300",
+    timeBadgeClassName: "text-green-700 bg-green-50 dark:text-green-300 dark:bg-green-900/30",
   },
   silver: {
-    headerBadgeClassName: "bg-zinc-200 text-zinc-900",
-    timeBadgeClassName: "text-zinc-700 bg-zinc-100",
+    headerBadgeClassName: "bg-zinc-200 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-200",
+    timeBadgeClassName: "text-zinc-700 bg-zinc-100 dark:text-zinc-200 dark:bg-zinc-800",
   },
   bla: {
-    headerBadgeClassName: "bg-blue-100 text-blue-900",
-    timeBadgeClassName: "text-blue-700 bg-blue-50",
+    headerBadgeClassName: "bg-blue-100 text-blue-900 dark:bg-blue-900/30 dark:text-blue-300",
+    timeBadgeClassName: "text-blue-700 bg-blue-50 dark:text-blue-300 dark:bg-blue-900/30",
   },
   vit: {
-    headerBadgeClassName: "bg-zinc-50 text-zinc-900 border border-zinc-300",
-    timeBadgeClassName: "text-zinc-700 bg-zinc-50 border border-zinc-300",
+    headerBadgeClassName: "bg-zinc-50 text-zinc-900 border border-zinc-300 dark:bg-zinc-800 dark:text-zinc-200 dark:border-zinc-600",
+    timeBadgeClassName: "text-zinc-700 bg-zinc-50 border border-zinc-300 dark:text-zinc-200 dark:bg-zinc-800 dark:border-zinc-600",
   },
 };
 

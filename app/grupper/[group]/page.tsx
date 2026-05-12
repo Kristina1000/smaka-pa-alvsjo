@@ -106,11 +106,10 @@ export default async function GroupPage({ params }: GroupPageProps) {
           Grupp {groupRoute.name}
         </h1>
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
-          Cykeltur mellan tre restauranger
+          Här är era smakställen och er rutt!
         </h1>
         <p className="max-w-3xl text-zinc-800 dark:text-zinc-300">
-          Start vid {groupRoute.startAddress}. Klicka på markörerna i kartan för
-          att öppna varje restaurangsida.
+          Klicka på siffrorna i kartan eller scrolla ner på sidan för att komma till varje smakstopp.
         </p>
       </header>
 
@@ -129,26 +128,26 @@ export default async function GroupPage({ params }: GroupPageProps) {
           <ol className="mt-4 space-y-4">
             {resolvedRestaurants.map(({ restaurant, ref }, index) => (
               <li key={restaurant.slug}>
-                <Link
+                  <Link
                   className="block space-y-1 rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/60 dark:hover:bg-zinc-800"
                   href={`/restauranger/${restaurant.slug}?group=${group}`}
                 >
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-400">
-                      Stopp {index + 1}
-                    </p>
-                    <span
-                      className={`rounded px-2 py-1 text-xs font-medium ${timeBadgeStyle}`}
-                    >
-                      {ref.visitTime}
-                    </span>
-                  </div>
+                    <div>
                   <p className="text-base font-semibold text-blue-800 dark:text-blue-400">
                     {restaurant.name}
                   </p>
                   <p className="text-sm text-zinc-800 dark:text-zinc-400">
                     {restaurant.address}
                   </p>
+                  </div>
+                  <span
+                      className={`rounded px-2 py-1 text-xs font-medium ${timeBadgeStyle}`}
+                    >
+                      {ref.visitTime}
+                    </span>
+                  </div>
+                  
                 </Link>
               </li>
             ))}

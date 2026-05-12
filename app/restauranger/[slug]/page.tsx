@@ -4,6 +4,7 @@ import {
   allGroupDefinitions,
   allRestaurants,
   restaurantsBySlug,
+  groupThemeBySlug,
 } from "@/lib/tour-data";
 import RestaurantFeedbackForm from "@/components/restaurant-feedback-form";
 
@@ -46,6 +47,8 @@ export default async function RestaurantPage({
   const backGroupSlug = activeGroup?.slug ?? "gul";
   const backGroupName = activeGroup?.name ?? "Gul";
 
+  const groupTheme = groupThemeBySlug[backGroupSlug];
+
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     restaurant.address,
   )}`;
@@ -69,7 +72,7 @@ export default async function RestaurantPage({
       </Link>
 
       <header className="space-y-3">
-        <p className="inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-900 dark:bg-amber-900/30 dark:text-amber-300">
+        <p className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${groupTheme.headerBadgeClassName}`}>
           Grupp {backGroupName}
         </p>
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
