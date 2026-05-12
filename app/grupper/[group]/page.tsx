@@ -124,7 +124,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
                   href={`/restauranger/${restaurant.slug}?group=${group}`}
                 >
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
+                    <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-400">
                       Stopp {index + 1}
                     </p>
                     <span
@@ -150,7 +150,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
             <p className="text-sm text-zinc-600 dark:text-zinc-300">
               {groupRoute.endDestination.name}
             </p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-zinc-700 dark:text-zinc-400">
               Ingen fast tid
             </p>
           </div>

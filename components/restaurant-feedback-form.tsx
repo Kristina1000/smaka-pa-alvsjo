@@ -248,7 +248,7 @@ export default function RestaurantFeedbackForm({
                   className={`inline-flex aspect-square w-full items-center justify-center rounded border text-xs leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 sm:text-sm dark:focus-visible:ring-offset-zinc-900 ${
                     isSelected
                       ? "border-amber-500 bg-amber-100 text-amber-700 dark:border-amber-400 dark:bg-amber-900/30 dark:text-amber-300"
-                      : "border-zinc-300 bg-white text-zinc-400 hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700"
+                      : "border-zinc-300 bg-white text-zinc-600 hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700"
                   }`}
                 >
                   ★
@@ -269,7 +269,7 @@ export default function RestaurantFeedbackForm({
             value={comment}
             onChange={(event) => setComment(event.target.value)}
             rows={4}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-400"
+            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none placeholder:text-zinc-500 focus:border-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-400"
             placeholder="Hur var maten, servicen och stämningen?"
             required
           />
@@ -319,7 +319,7 @@ export default function RestaurantFeedbackForm({
                 ) : null}
               </div>
               <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">{entry.comment}</p>
-              <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="mt-2 text-xs text-zinc-700 dark:text-zinc-400">
                 {new Date(entry.createdAt).toLocaleString("sv-SE")}
               </p>
             </li>
