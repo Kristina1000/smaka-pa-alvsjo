@@ -20,6 +20,7 @@ const USER_LOCATION_MARKER_STROKE = "#1d4ed8";
 const USER_LOCATION_MARKER_FILL = "#3b82f6";
 const USER_ACCURACY_STROKE = "#60a5fa";
 const USER_ACCURACY_FILL = "#93c5fd";
+const STREET_LEVEL_ZOOM = 17;
 const STOCKHOLM_WMS_URL =
   "https://kartor.stockholm.se/bios/wms/app/baggis/web/WMS_STHLM_STOCKHOLMSKARTA_GRA";
 const STOCKHOLM_ATTRIBUTION =
@@ -189,21 +190,41 @@ export default function BikeTourMap({
           maxZoom: 19,
         });
 
-        let didFallbackToOsm = false;
-        const fallbackToOsm = () => {
-          if (didFallbackToOsm || cancelled) {
+        let stockholmUnavailable = false;
+        const syncBasemapForZoom = () => {
+          const useStockholm =
+            !stockholmUnavailable && map.getZoom() >= STREET_LEVEL_ZOOM;
+
+          if (useStockholm) {
+            if (!map.hasLayer(stockholmLayer)) {
+              stockholmLayer.addTo(map);
+            }
+            if (map.hasLayer(osmLayer)) {
+              map.removeLayer(osmLayer);
+            }
             return;
           }
 
-          didFallbackToOsm = true;
+          if (!map.hasLayer(osmLayer)) {
+            osmLayer.addTo(map);
+          }
           if (map.hasLayer(stockholmLayer)) {
             map.removeLayer(stockholmLayer);
           }
-          osmLayer.addTo(map);
+        };
+
+        const fallbackToOsm = () => {
+          if (stockholmUnavailable || cancelled) {
+            return;
+          }
+
+          stockholmUnavailable = true;
+          syncBasemapForZoom();
         };
 
         stockholmLayer.on("tileerror", fallbackToOsm);
-        stockholmLayer.addTo(map);
+        map.on("zoomend", syncBasemapForZoom);
+        osmLayer.addTo(map);
 
         const startIcon = L.divIcon({
           className: "map-pin map-pin-start",
@@ -305,6 +326,7 @@ export default function BikeTourMap({
         }).addTo(map);
 
         map.fitBounds(boundsPoints, { padding: [24, 24] });
+        syncBasemapForZoom();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Ett okänt fel uppstod.");
       }
