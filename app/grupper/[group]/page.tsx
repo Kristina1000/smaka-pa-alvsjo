@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import BikeTourMap from "@/components/bike-tour-map";
@@ -88,6 +89,15 @@ export default async function GroupPage({ params }: GroupPageProps) {
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+      <div className="flex justify-center mb-2">
+        <Image
+          src="/smaka-pa-alvsjo.png"
+          alt="Smaka på Älvsjö"
+          width={100}
+          height={100}
+          className="w-1/3 h-auto"
+        />
+      </div>
       <SaveGroupToStorage group={groupRoute.name} />
       <header className="space-y-3">
         <h1

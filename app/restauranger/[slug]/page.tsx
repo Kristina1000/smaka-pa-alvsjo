@@ -18,6 +18,8 @@ export async function generateStaticParams() {
   }));
 }
 
+import Image from "next/image";
+
 export default async function RestaurantPage({
   params,
   searchParams,
@@ -50,6 +52,15 @@ export default async function RestaurantPage({
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
+      <div className="flex justify-center mb-2">
+        <Image
+          src="/smaka-pa-alvsjo.png"
+          alt="Smaka på Älvsjö"
+          width={100}
+          height={100}
+          className="w-1/3 h-auto"
+        />
+      </div>
       <Link
         href={`/grupper/${backGroupSlug}`}
         className="text-sm font-medium text-blue-800 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
