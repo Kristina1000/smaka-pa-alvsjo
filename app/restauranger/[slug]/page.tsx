@@ -46,17 +46,15 @@ export default async function RestaurantPage({
           <RestaurantActiveGroupBadge fallbackGroupSlug="gul" />
         </div>
         {restaurant.url ? (
-          <a
-            href={restaurant.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
-          >
-            {restaurant.name}
-            <span aria-hidden="true" className="text-lg">
+          <div className="flex items-center gap-2">
+            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+            >
+              {restaurant.name}
+            </h1>
+            <a aria-hidden="true" className="text-lg" href={restaurant.url} >
               ↗
-            </span>
-          </a>
+            </a>
+          </div>
         ) : (
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
             {restaurant.name}
