@@ -55,21 +55,18 @@ export default async function RestaurantPage({
 
   return (
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
-      <div className="flex justify-center">
-        <Image
-          src="/smaka-pa-alvsjo.png"
-          alt="Smaka på Älvsjö"
-          width={96}
-          height={96}
-          className="h-auto w-24"
-        />
-      </div>
-
       <header className="space-y-2">
-        <div>
+        <div className="flex items-center gap-3">
+          <Image
+            src="/smaka-pa-alvsjo.png"
+            alt="Smaka på Älvsjö"
+            width={96}
+            height={96}
+            className="h-auto w-20"
+          />
           <Link
             href={`/grupper/${backGroupSlug}`}
-            className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold transition hover:opacity-90 ${groupTheme.headerBadgeClassName}`}
+            className={`inline-flex items-center rounded-full px-4 py-2 text-base font-semibold transition hover:opacity-90 ${groupTheme.headerBadgeClassName}`}
           >
             <span aria-hidden="true" className="mr-2 text-base">
               ←

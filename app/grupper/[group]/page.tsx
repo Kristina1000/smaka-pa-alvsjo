@@ -93,22 +93,22 @@ export default async function GroupPage({ params }: GroupPageProps) {
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
-      <div className="flex justify-center">
-        <Image
-          src="/smaka-pa-alvsjo.png"
-          alt="Smaka på Älvsjö"
-          width={96}
-          height={96}
-          className="h-auto w-24"
-        />
-      </div>
       <SaveGroupToStorage group={groupRoute.name} />
       <header className="space-y-3">
-        <h1
-          className={`inline-flex rounded-full px-3 py-1 text-sm font-semibold ${badgeStyle}`}
-        >
-          Grupp {groupRoute.name}
-        </h1>
+        <div className="flex items-center gap-3">
+          <Image
+            src="/smaka-pa-alvsjo.png"
+            alt="Smaka på Älvsjö"
+            width={96}
+            height={96}
+            className="h-auto w-20"
+          />
+          <h1
+            className={`inline-flex rounded-full px-4 py-2 text-base font-semibold ${badgeStyle}`}
+          >
+            Grupp {groupRoute.name}
+          </h1>
+        </div>
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
           Här är era smakställen och er rutt!
         </h1>
