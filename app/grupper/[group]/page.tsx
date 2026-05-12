@@ -98,7 +98,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
           Cykeltur mellan tre restauranger
         </h1>
-        <p className="max-w-3xl text-zinc-700 dark:text-zinc-300">
+        <p className="max-w-3xl text-zinc-800 dark:text-zinc-300">
           Start vid {groupRoute.startAddress}. Klicka på markörerna i kartan för
           att öppna varje restaurangsida.
         </p>
@@ -124,7 +124,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
                   href={`/restauranger/${restaurant.slug}?group=${group}`}
                 >
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
+                    <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-400">
                       Stopp {index + 1}
                     </p>
                     <span
@@ -133,10 +133,10 @@ export default async function GroupPage({ params }: GroupPageProps) {
                       {ref.visitTime}
                     </span>
                   </div>
-                  <p className="text-base font-semibold text-blue-700 dark:text-blue-400">
+                  <p className="text-base font-semibold text-blue-800 dark:text-blue-400">
                     {restaurant.name}
                   </p>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                  <p className="text-sm text-zinc-800 dark:text-zinc-400">
                     {restaurant.address}
                   </p>
                 </Link>
@@ -144,13 +144,13 @@ export default async function GroupPage({ params }: GroupPageProps) {
             ))}
           </ol>
           <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-800">
-            <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-200">
+            <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
               Mål
             </p>
-            <p className="text-sm text-zinc-600 dark:text-zinc-300">
+            <p className="text-sm text-zinc-800 dark:text-zinc-300">
               {groupRoute.endDestination.name}
             </p>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            <p className="text-xs text-zinc-700 dark:text-zinc-400">
               Ingen fast tid
             </p>
           </div>

@@ -22,7 +22,7 @@ export default function Home() {
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
           Välkommen till Smaka på Älvsjö!
         </h1>
-        <p className="max-w-2xl text-zinc-700 dark:text-zinc-300">
+          <p className="max-w-2xl text-zinc-900 dark:text-zinc-300">
           Vandra mellan gruppernas cykelturer och restaurangsidor.
         </p>
       </header>
@@ -40,7 +40,7 @@ export default function Home() {
             <h2 className="mt-1 text-xl font-bold text-zinc-900 dark:text-zinc-100">
               {group.name}
             </h2>
-            <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
+              <p className="mt-2 text-sm text-zinc-900 dark:text-zinc-300">
               Start vid Bromsvägen 46 med tre restaurangstopp
             </p>
           </Link>

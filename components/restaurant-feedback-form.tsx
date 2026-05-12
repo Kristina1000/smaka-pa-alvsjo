@@ -256,7 +256,7 @@ export default function RestaurantFeedbackForm({
               );
             })}
           </div>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400">
+          <p className="text-xs text-zinc-800 dark:text-zinc-400">
             1 = sämst, 10 = bäst. Valt betyg: {rating ?? "-"}/10.
           </p>
         </fieldset>
@@ -284,7 +284,7 @@ export default function RestaurantFeedbackForm({
         </button>
 
         {statusMessage ? (
-          <p className="text-sm text-zinc-700 dark:text-zinc-300">{statusMessage}</p>
+          <p className="text-sm text-zinc-800 dark:text-zinc-300">{statusMessage}</p>
         ) : null}
       </form>
 
@@ -293,13 +293,13 @@ export default function RestaurantFeedbackForm({
           Tidigare omdömen
         </h3>
         {!isHydrated ? (
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">Laddar omdömen...</p>
+          <p className="text-sm text-zinc-800 dark:text-zinc-400">Laddar omdömen...</p>
         ) : entries.length ? (
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="text-sm text-zinc-800 dark:text-zinc-400">
             {entries.length} omdömen, snittbetyg: {averageRating}
           </p>
         ) : (
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">Inga omdömen än så länge.</p>
+          <p className="text-sm text-zinc-800 dark:text-zinc-400">Inga omdömen än så länge.</p>
         )}
 
         <ul className="space-y-3">
@@ -318,8 +318,8 @@ export default function RestaurantFeedbackForm({
                   </span>
                 ) : null}
               </div>
-              <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">{entry.comment}</p>
-              <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="mt-1 text-sm text-zinc-800 dark:text-zinc-300">{entry.comment}</p>
+              <p className="mt-2 text-xs text-zinc-700 dark:text-zinc-400">
                 {new Date(entry.createdAt).toLocaleString("sv-SE")}
               </p>
             </li>

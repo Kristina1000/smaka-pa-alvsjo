@@ -96,7 +96,7 @@ export const allRestaurants: readonly Restaurant[] = [
   },
   {
     slug: "var-pizza",
-    name: "VÅR PIZZA",
+    name: "Vår Pizza",
     address: "Johan Skyttes Väg 218, 125 34 Älvsjö",
     description:
       "En pizzeria med fokus på kvalitet och hantverksmässig framställning.",

@@ -52,7 +52,7 @@ export default async function RestaurantPage({
     <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-6 px-4 py-10 sm:px-6 lg:px-8">
       <Link
         href={`/grupper/${backGroupSlug}`}
-        className="text-sm font-medium text-blue-700 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+        className="text-sm font-medium text-blue-800 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
       >
         Tillbaka till Grupp {backGroupName}
       </Link>
@@ -64,12 +64,12 @@ export default async function RestaurantPage({
         <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
           {restaurant.name}
         </h1>
-        <p className="text-zinc-700 dark:text-zinc-300">{restaurant.description}</p>
+        <p className="text-zinc-800 dark:text-zinc-300">{restaurant.description}</p>
       </header>
 
       <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
         <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Adress</h2>
-        <p className="mt-2 text-zinc-700 dark:text-zinc-300">{restaurant.address}</p>
+        <p className="mt-2 text-zinc-800 dark:text-zinc-300">{restaurant.address}</p>
         <a
           href={mapsUrl}
           target="_blank"

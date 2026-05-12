@@ -19,7 +19,7 @@ export default function GroupVisitPlanTable({
         <div className="mt-4 overflow-x-auto">
           <table className="min-w-full divide-y divide-zinc-200 text-sm dark:divide-zinc-700">
             <thead>
-              <tr className="text-left text-zinc-600 dark:text-zinc-400">
+              <tr className="text-left text-zinc-800 dark:text-zinc-400">
                 <th className="px-2 py-2 font-semibold">Grupp</th>
                 <th className="px-2 py-2 font-semibold">Restaurang</th>
                 <th className="px-2 py-2 font-semibold">Tid</th>
@@ -31,10 +31,10 @@ export default function GroupVisitPlanTable({
                   <td className="whitespace-nowrap px-2 py-2 font-medium text-zinc-900 dark:text-zinc-100">
                     {row.groupName}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-2 text-zinc-700 dark:text-zinc-300">
+                  <td className="whitespace-nowrap px-2 py-2 text-zinc-800 dark:text-zinc-300">
                     {row.restaurantName}
                   </td>
-                  <td className="whitespace-nowrap px-2 py-2 text-zinc-700 dark:text-zinc-300">
+                  <td className="whitespace-nowrap px-2 py-2 text-zinc-800 dark:text-zinc-300">
                     {row.visitTime}
                   </td>
                 </tr>
@@ -43,7 +43,7 @@ export default function GroupVisitPlanTable({
           </table>
         </div>
       ) : (
-        <p className="mt-4 text-sm text-zinc-600 dark:text-zinc-400">{emptyMessage}</p>
+        <p className="mt-4 text-sm text-zinc-800 dark:text-zinc-400">{emptyMessage}</p>
       )}
     </section>
   );

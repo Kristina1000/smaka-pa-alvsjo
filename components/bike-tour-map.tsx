@@ -137,29 +137,36 @@ export default function BikeTourMap({
           );
         };
 
-        const locationControl = L.control({ position: "topright" });
-        locationControl.onAdd = () => {
-          const container = L.DomUtil.create("div", "leaflet-bar");
-          const button = L.DomUtil.create(
-            "button",
-            "map-location-button",
-            container,
-          ) as HTMLButtonElement;
-          button.type = "button";
-          button.title = "Visa min position";
-          button.setAttribute("aria-label", "Visa min position");
-          button.textContent = "📍";
-          L.DomEvent.disableClickPropagation(container);
-          const onLocationButtonClick = () => {
-            startLocationWatch();
-          };
-          L.DomEvent.on(button, "click", onLocationButtonClick);
-          removeLocationClickHandler = () => {
-            L.DomEvent.off(button, "click", onLocationButtonClick);
-          };
-          return container;
-        };
-        locationControl.addTo(map);
+        const LocationControl = L.Control.extend({
+          onAdd: () => {
+            const container = L.DomUtil.create("div", "leaflet-bar");
+            const button = L.DomUtil.create(
+              "button",
+              "map-location-button",
+              container,
+            ) as HTMLButtonElement;
+            button.type = "button";
+            button.title = "Visa min position";
+            button.setAttribute("aria-label", "Visa min position");
+
+            const icon = L.DomUtil.create("i", "map-location-icon", button);
+            icon.setAttribute("aria-hidden", "true");
+            icon.classList.add("fa-solid", "fa-location-crosshairs");
+
+            L.DomEvent.disableClickPropagation(container);
+            const onLocationButtonClick = () => {
+              startLocationWatch();
+            };
+            L.DomEvent.on(button, "click", onLocationButtonClick);
+            removeLocationClickHandler = () => {
+              L.DomEvent.off(button, "click", onLocationButtonClick);
+            };
+            return container;
+          },
+        });
+
+        const locationControl = new LocationControl({ position: "topright" });
+        map.addControl(locationControl);
 
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "&copy; OpenStreetMap contributors",
@@ -294,7 +301,7 @@ export default function BikeTourMap({
         className="h-[440px] w-full rounded-2xl border border-zinc-200 shadow-sm dark:border-zinc-700"
       />
       {error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+      <p className="text-sm text-zinc-700 dark:text-zinc-400">
         Karta och rutt visas med OpenStreetMap och fri cykel-routing.
       </p>
     </div>
