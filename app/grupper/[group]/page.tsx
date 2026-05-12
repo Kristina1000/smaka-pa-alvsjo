@@ -93,7 +93,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
-      <SaveGroupToStorage group={groupRoute.name} />
+      <SaveGroupToStorage group={group} />
       <header className="space-y-3">
         <div className="flex items-center gap-3">
           <Image
@@ -123,7 +123,6 @@ export default async function GroupPage({ params }: GroupPageProps) {
           startCoordinates={groupRoute.startCoordinates}
           endDestination={groupRoute.endDestination}
           restaurants={resolvedRestaurants.map((item) => item.restaurant)}
-          groupSlug={group}
         />
 
         <aside className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
@@ -135,7 +134,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
               <li key={restaurant.slug}>
                 <Link
                   className="block space-y-1 rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/60 dark:hover:bg-zinc-800"
-                  href={`/restauranger/${restaurant.slug}?group=${group}`}
+                  href={`/restauranger/${restaurant.slug}`}
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -159,7 +158,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
               <li key={endDestinationRestaurant.slug}>
                 <Link
                   className="block space-y-1 rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/60 dark:hover:bg-zinc-800"
-                  href={`/restauranger/${endDestinationRestaurant.slug}?group=${group}`}
+                  href={`/restauranger/${endDestinationRestaurant.slug}`}
                 >
                   <div className="flex items-center justify-between">
                     <div>

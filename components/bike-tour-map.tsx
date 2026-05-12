@@ -12,7 +12,6 @@ type BikeTourMapProps = {
   };
   endDestination: RouteLocation;
   restaurants: readonly Restaurant[];
-  groupSlug?: string;
 };
 
 const LOCATION_MAX_AGE_MS = 5000;
@@ -38,7 +37,6 @@ export default function BikeTourMap({
   startCoordinates,
   endDestination,
   restaurants,
-  groupSlug,
 }: BikeTourMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -285,9 +283,8 @@ export default function BikeTourMap({
             },
           ).addTo(map);
 
-          const restaurantQuery = groupSlug ? `?group=${encodeURIComponent(groupSlug)}` : "";
           marker.on("click", () => {
-            router.push(`/restauranger/${restaurant.slug}${restaurantQuery}`);
+            router.push(`/restauranger/${restaurant.slug}`);
           });
         });
 
@@ -300,9 +297,8 @@ export default function BikeTourMap({
         ).addTo(map);
 
         if (endDestination.slug) {
-          const query = groupSlug ? `?group=${encodeURIComponent(groupSlug)}` : "";
           endMarker.on("click", () => {
-            router.push(`/restauranger/${endDestination.slug}${query}`);
+            router.push(`/restauranger/${endDestination.slug}`);
           });
         }
 

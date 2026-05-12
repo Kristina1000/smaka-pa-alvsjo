@@ -1,16 +1,13 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
-  allGroupDefinitions,
   allRestaurants,
   restaurantsBySlug,
-  groupThemeBySlug,
 } from "@/lib/tour-data";
+import RestaurantActiveGroupBadge from "@/components/restaurant-active-group-badge";
 import RestaurantFeedbackForm from "@/components/restaurant-feedback-form";
 
 type RestaurantPageProps = {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ group?: string | string[] }>;
 };
 
 export async function generateStaticParams() {
@@ -23,31 +20,13 @@ import Image from "next/image";
 
 export default async function RestaurantPage({
   params,
-  searchParams,
 }: RestaurantPageProps) {
   const { slug } = await params;
-  const query = await searchParams;
   const restaurant = restaurantsBySlug[slug];
 
   if (!restaurant) {
     notFound();
   }
-
-  const requestedGroup =
-    typeof query.group === "string"
-      ? query.group
-      : Array.isArray(query.group)
-        ? query.group[0]
-        : undefined;
-
-  const activeGroup = allGroupDefinitions.find(
-    (group) => group.slug === requestedGroup,
-  );
-
-  const backGroupSlug = activeGroup?.slug ?? "gul";
-  const backGroupName = activeGroup?.name ?? "Gul";
-
-  const groupTheme = groupThemeBySlug[backGroupSlug];
 
   const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
     restaurant.address,
@@ -64,15 +43,7 @@ export default async function RestaurantPage({
             height={96}
             className="h-auto w-20"
           />
-          <Link
-            href={`/grupper/${backGroupSlug}`}
-            className={`inline-flex items-center rounded-full px-4 py-2 text-base font-semibold transition hover:opacity-90 ${groupTheme.headerBadgeClassName}`}
-          >
-            <span aria-hidden="true" className="mr-2 text-base">
-              ←
-            </span>
-            Grupp {backGroupName}
-          </Link>
+          <RestaurantActiveGroupBadge fallbackGroupSlug="gul" />
         </div>
         {restaurant.url ? (
           <a
