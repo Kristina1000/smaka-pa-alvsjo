@@ -65,20 +65,35 @@ export default async function RestaurantPage({
         />
       </div>
 
-      <header className="space-y-3">
-        <Link
-          href={`/grupper/${backGroupSlug}`}
-          className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold transition hover:opacity-90 ${groupTheme.headerBadgeClassName}`}
-        >
-          <span aria-hidden="true" className="mr-2 text-base">
-            ←
-          </span>
-          Grupp {backGroupName}
-        </Link>
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          {restaurant.name}
-        </h1>
-        
+      <header className="space-y-2">
+        <div>
+          <Link
+            href={`/grupper/${backGroupSlug}`}
+            className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold transition hover:opacity-90 ${groupTheme.headerBadgeClassName}`}
+          >
+            <span aria-hidden="true" className="mr-2 text-base">
+              ←
+            </span>
+            Grupp {backGroupName}
+          </Link>
+        </div>
+        {restaurant.url ? (
+          <a
+            href={restaurant.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+          >
+            {restaurant.name}
+            <span aria-hidden="true" className="text-lg">
+              ↗
+            </span>
+          </a>
+        ) : (
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+            {restaurant.name}
+          </h1>
+        )}
       </header>
 
       <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">

@@ -7,6 +7,7 @@ export type Restaurant = {
     lat: number;
     lng: number;
   };
+  url?: string;
 };
 
 export type GroupSlug =
@@ -64,6 +65,7 @@ export type RouteLocation = {
 export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "casa-del-planka",
+    url: "https://www.lacasadeplanka.se/",
     name: "La Casa de Planka",
     address: "Klockhusgränd 1A, 125 49 Älvsjö, Sweden",
     description:
@@ -75,6 +77,7 @@ export const allRestaurants: readonly Restaurant[] = [
   },
   {
     slug: "erssons",
+    url: "https://erssons.se/fruangen/",
     name: "Erssons",
     address: "Fruängstorget 6, 129 52 Hägersten, Sweden",
     description:
@@ -87,6 +90,7 @@ export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "teso",
     name: "TESO Sushi & Ramen",
+    url:"https://order.openpos.cloud/tesosushi/select-menu",
     address: "Kabelverksgatan 16, 125 48 Älvsjö, Sweden",
     description:
       "Sista stoppet på den gula cykelslingan med nära tillbaka till startområdet.",
@@ -98,6 +102,7 @@ export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "var-pizza",
     name: "Vår Pizza",
+    url:"https://www.varpizza.se/alvsjo",
     address: "Johan Skyttes Väg 218, 125 34 Älvsjö",
     description:
       "En pizzeria med fokus på kvalitet och hantverksmässig framställning.",
@@ -109,6 +114,7 @@ export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "kottverket",
     name: "Köttverket",
+    url:"https://kottverket.se/",
     address: "Johan Skyttes Väg 203, 125 34 Älvsjö",
     description:
       "En specialiserad köttbutik och restaurang med fokus på lokala och högkvalitativa produkter.",
@@ -130,6 +136,7 @@ export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "beirut",
     name: "Beirut Lounge",
+    url: "https://beirutlounge.se/",
     address: "Fruängstorget 6, 129 52 Hägersten",
     description: "Levantinsk restaurang med autentisk mat från Mellanöstern.",
     coordinates: {
@@ -140,6 +147,7 @@ export const allRestaurants: readonly Restaurant[] = [
   {
     slug: "herrangens-gard",
     name: "Herrängens Gård",
+    url: "https://herrangensgard.se/",
     address: "Herrängens Gård, 125 54 Älvsjö, Sweden",
     description:
       "Cykelturens mål och samlingsplats vid en klassisk herrgård.",

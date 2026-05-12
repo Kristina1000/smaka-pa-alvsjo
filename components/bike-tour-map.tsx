@@ -285,8 +285,9 @@ export default function BikeTourMap({
             },
           ).addTo(map);
 
+          const restaurantQuery = groupSlug ? `?group=${encodeURIComponent(groupSlug)}` : "";
           marker.on("click", () => {
-            router.push(`/restauranger/${restaurant.slug}`);
+            router.push(`/restauranger/${restaurant.slug}${restaurantQuery}`);
           });
         });
 
