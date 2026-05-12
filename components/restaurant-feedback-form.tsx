@@ -234,78 +234,76 @@ export default function RestaurantFeedbackForm({
         Betyg och kommentar
       </h2>
 
-      <form className="mt-4 space-y-4" onSubmit={onSubmit}>
-        {hasSubmitted ? (
-          <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-900/30 dark:bg-emerald-900/10 dark:text-emerald-200">
-            Du har redan skickat ett omdöme för den här restaurangen.
-          </p>
-        ) : null}
-        <fieldset className="space-y-2">
-          <legend className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-            Totalbetyg (1-10)
-          </legend>
-          <div
-            className="grid w-full grid-cols-10 gap-1 sm:gap-1.5"
-            role="radiogroup"
-            aria-label="Valj betyg mellan 1 och 10"
+      {hasSubmitted ? (
+        <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-sm text-emerald-900 shadow-sm dark:border-emerald-900/30 dark:bg-emerald-900/10 dark:text-emerald-200">
+          Tack! Ditt omdöme är skickat.
+        </div>
+      ) : (
+        <form className="mt-4 space-y-4" onSubmit={onSubmit}>
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+              Totalbetyg (1-10)
+            </legend>
+            <div
+              className="grid w-full grid-cols-10 gap-1 sm:gap-1.5"
+              role="radiogroup"
+              aria-label="Valj betyg mellan 1 och 10"
+            >
+              {Array.from({ length: 10 }, (_, index) => {
+                const value = index + 1;
+                const isSelected = (rating ?? 0) >= value;
+                const isChecked = rating === value;
+
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setRating(value)}
+                    role="radio"
+                    aria-checked={isChecked}
+                    aria-label={`${value} av 10`}
+                    className={`inline-flex aspect-square w-full items-center justify-center rounded border text-xs leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 sm:text-sm dark:focus-visible:ring-offset-zinc-900 ${
+                      isSelected
+                        ? "border-amber-500 bg-amber-100 text-amber-700 dark:border-amber-400 dark:bg-amber-900/30 dark:text-amber-300"
+                        : "border-zinc-300 bg-white text-zinc-400 hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700"
+                    }`}
+                  >
+                    ★
+                  </button>
+                );
+              })}
+            </div>
+            <p className="text-xs text-zinc-800 dark:text-zinc-400">
+              1 = sämst, 10 = bäst. Valt betyg: {rating ?? "-"}/10.
+            </p>
+          </fieldset>
+
+          <label className="block space-y-1">
+            <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+              Kommentar om besöket (valfritt)
+            </span>
+            <textarea
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
+              rows={4}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-400"
+              placeholder="Hur var maten, servicen och stämningen?"
+            />
+          </label>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="inline-flex rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-900 hover:bg-amber-400 disabled:opacity-50 dark:bg-amber-400 dark:hover:bg-amber-300"
           >
-            {Array.from({ length: 10 }, (_, index) => {
-              const value = index + 1;
-              const isSelected = (rating ?? 0) >= value;
-              const isChecked = rating === value;
+            {submitting ? "Skickar..." : "Skicka omdöme"}
+          </button>
 
-              return (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => setRating(value)}
-                  disabled={hasSubmitted}
-                  role="radio"
-                  aria-checked={isChecked}
-                  aria-label={`${value} av 10`}
-                  className={`inline-flex aspect-square w-full items-center justify-center rounded border text-xs leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 sm:text-sm dark:focus-visible:ring-offset-zinc-900 ${
-                    isSelected
-                      ? "border-amber-500 bg-amber-100 text-amber-700 dark:border-amber-400 dark:bg-amber-900/30 dark:text-amber-300"
-                      : "border-zinc-300 bg-white text-zinc-400 hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700"
-                  }`}
-                >
-                  ★
-                </button>
-              );
-            })}
-          </div>
-          <p className="text-xs text-zinc-800 dark:text-zinc-400">
-            1 = sämst, 10 = bäst. Valt betyg: {rating ?? "-"}/10.
-          </p>
-        </fieldset>
-
-        <label className="block space-y-1">
-          <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-            Kommentar om besöket (valfritt)
-          </span>
-          <textarea
-            value={comment}
-            onChange={(event) => setComment(event.target.value)}
-            rows={4}
-            disabled={hasSubmitted}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-400 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400 dark:disabled:bg-zinc-800"
-            placeholder="Hur var maten, servicen och stämningen?"
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={submitting || hasSubmitted}
-          className="inline-flex rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-900 hover:bg-amber-400 disabled:opacity-50 dark:bg-amber-400 dark:hover:bg-amber-300"
-        >
-          {submitting ? "Skickar..." : "Skicka omdöme"}
-        </button>
-
-        {statusMessage ? (
-          <p className="text-sm text-zinc-800 dark:text-zinc-300">{statusMessage}</p>
-        ) : null}
-      </form>
-
+          {statusMessage ? (
+            <p className="text-sm text-zinc-800 dark:text-zinc-300">{statusMessage}</p>
+          ) : null}
+        </form>
+      )}
 
     </section>
   );
