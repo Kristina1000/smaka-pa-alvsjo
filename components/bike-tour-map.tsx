@@ -20,7 +20,12 @@ const USER_LOCATION_MARKER_STROKE = "#1d4ed8";
 const USER_LOCATION_MARKER_FILL = "#3b82f6";
 const USER_ACCURACY_STROKE = "#60a5fa";
 const USER_ACCURACY_FILL = "#93c5fd";
-const STREET_LEVEL_ZOOM = 17;
+function getStockholmZoomThreshold() {
+  if (typeof window !== "undefined" && window.devicePixelRatio >= 2) {
+    return 15;
+  }
+  return 17;
+}
 const STOCKHOLM_WMS_URL =
   "https://kartor.stockholm.se/bios/wms/app/baggis/web/WMS_STHLM_STOCKHOLMSKARTA_GRA";
 const STOCKHOLM_ATTRIBUTION =
@@ -191,9 +196,14 @@ export default function BikeTourMap({
         });
 
         let stockholmUnavailable = false;
+
+        let stockholmZoomThreshold = getStockholmZoomThreshold();
+        // Re-evaluate on resize/zoom for dynamic devicePixelRatio changes
         const syncBasemapForZoom = () => {
+          // Re-check threshold in case devicePixelRatio changed
+          stockholmZoomThreshold = getStockholmZoomThreshold();
           const useStockholm =
-            !stockholmUnavailable && map.getZoom() >= STREET_LEVEL_ZOOM;
+            !stockholmUnavailable && map.getZoom() >= stockholmZoomThreshold;
 
           if (useStockholm) {
             if (!map.hasLayer(stockholmLayer)) {
