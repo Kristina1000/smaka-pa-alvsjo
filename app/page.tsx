@@ -21,10 +21,10 @@ export default function Home() {
         <Image
           src="/smaka-pa-alvsjo.png"
           alt="Smaka på Älvsjö"
-          width={320}
-          height={320}
+          width={240}
+          height={240}
           priority
-          className="h-auto w-full sm:max-w-xs p-2"
+          className="h-auto w-48 sm:w-56 p-2"
         />
       </div>
 

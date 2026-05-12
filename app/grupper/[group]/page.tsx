@@ -93,13 +93,13 @@ export default async function GroupPage({ params }: GroupPageProps) {
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
-      <div className="flex justify-center mb-2">
+      <div className="flex justify-center">
         <Image
           src="/smaka-pa-alvsjo.png"
           alt="Smaka på Älvsjö"
-          width={100}
-          height={100}
-          className="w-1/3 h-auto"
+          width={96}
+          height={96}
+          className="h-auto w-24"
         />
       </div>
       <SaveGroupToStorage group={groupRoute.name} />
