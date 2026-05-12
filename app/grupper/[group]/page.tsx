@@ -87,6 +87,10 @@ export default async function GroupPage({ params }: GroupPageProps) {
   const badgeStyle = groupTheme.headerBadgeClassName;
   const timeBadgeStyle = groupTheme.timeBadgeClassName;
 
+  const endDestinationRestaurant =
+    groupRoute.endDestination.slug &&
+    restaurantsBySlug[groupRoute.endDestination.slug];
+
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
       <div className="flex justify-center mb-2">
@@ -119,6 +123,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
           startCoordinates={groupRoute.startCoordinates}
           endDestination={groupRoute.endDestination}
           restaurants={resolvedRestaurants.map((item) => item.restaurant)}
+          groupSlug={group}
         />
 
         <aside className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
@@ -128,41 +133,53 @@ export default async function GroupPage({ params }: GroupPageProps) {
           <ol className="mt-4 space-y-4">
             {resolvedRestaurants.map(({ restaurant, ref }, index) => (
               <li key={restaurant.slug}>
-                  <Link
+                <Link
                   className="block space-y-1 rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/60 dark:hover:bg-zinc-800"
                   href={`/restauranger/${restaurant.slug}?group=${group}`}
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                  <p className="text-base font-semibold text-blue-800 dark:text-blue-400">
-                    {restaurant.name}
-                  </p>
-                  <p className="text-sm text-zinc-800 dark:text-zinc-400">
-                    {restaurant.address}
-                  </p>
-                  </div>
-                  <span
+                      <p className="text-base font-semibold text-blue-800 dark:text-blue-400">
+                        {restaurant.name}
+                      </p>
+                      <p className="text-sm text-zinc-800 dark:text-zinc-400">
+                        {restaurant.address}
+                      </p>
+                    </div>
+                    <span
                       className={`rounded px-2 py-1 text-xs font-medium ${timeBadgeStyle}`}
                     >
                       {ref.visitTime}
                     </span>
                   </div>
-                  
                 </Link>
               </li>
             ))}
+            {endDestinationRestaurant ? (
+              <li key={endDestinationRestaurant.slug}>
+                <Link
+                  className="block space-y-1 rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/60 dark:hover:bg-zinc-800"
+                  href={`/restauranger/${endDestinationRestaurant.slug}?group=${group}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-base font-semibold text-blue-800 dark:text-blue-400">
+                        {endDestinationRestaurant.name}
+                      </p>
+                      <p className="text-sm text-zinc-800 dark:text-zinc-400">
+                        {endDestinationRestaurant.address}
+                      </p>
+                    </div>
+                    <span
+                      className={`rounded px-2 py-1 text-xs font-medium ${timeBadgeStyle}`}
+                    >
+                      Mål
+                    </span>
+                  </div>
+                </Link>
+              </li>
+            ) : null}
           </ol>
-          <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-700 dark:bg-zinc-800">
-            <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-              Mål
-            </p>
-            <p className="text-sm text-zinc-800 dark:text-zinc-300">
-              {groupRoute.endDestination.name}
-            </p>
-            <p className="text-xs text-zinc-700 dark:text-zinc-400">
-              Ingen fast tid
-            </p>
-          </div>
         </aside>
       </section>
     </main>

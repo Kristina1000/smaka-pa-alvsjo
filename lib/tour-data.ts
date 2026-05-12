@@ -58,6 +58,7 @@ export type RouteLocation = {
     lat: number;
     lng: number;
   };
+  slug?: string;
 };
 
 export const allRestaurants: readonly Restaurant[] = [
@@ -136,6 +137,17 @@ export const allRestaurants: readonly Restaurant[] = [
       lng: 17.9641781,
     },
   },
+  {
+    slug: "herrangens-gard",
+    name: "Herrängens Gård",
+    address: "Herrängens Gård, 125 54 Älvsjö, Sweden",
+    description:
+      "Cykelturens mål och samlingsplats vid en klassisk herrgård.",
+    coordinates: {
+      lat: 59.2733581,
+      lng: 17.9607217,
+    },
+  },
 ] as const;
 
 export const sharedStartLocation: RouteLocation = {
@@ -154,6 +166,7 @@ export const sharedEndDestination: RouteLocation = {
     lat: 59.2733581,
     lng: 17.9607217,
   },
+  slug: "herrangens-gard",
 };
 
 const sharedRouteDefaults = {

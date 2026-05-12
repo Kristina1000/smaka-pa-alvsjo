@@ -12,6 +12,7 @@ type BikeTourMapProps = {
   };
   endDestination: RouteLocation;
   restaurants: readonly Restaurant[];
+  groupSlug?: string;
 };
 
 const LOCATION_MAX_AGE_MS = 5000;
@@ -37,6 +38,7 @@ export default function BikeTourMap({
   startCoordinates,
   endDestination,
   restaurants,
+  groupSlug,
 }: BikeTourMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -288,13 +290,20 @@ export default function BikeTourMap({
           });
         });
 
-        L.marker(
+        const endMarker = L.marker(
           [endDestination.coordinates.lat, endDestination.coordinates.lng],
           {
             icon: endIcon,
             title: `Mål: ${endDestination.name}`,
           },
         ).addTo(map);
+
+        if (endDestination.slug) {
+          const query = groupSlug ? `?group=${encodeURIComponent(groupSlug)}` : "";
+          endMarker.on("click", () => {
+            router.push(`/restauranger/${endDestination.slug}${query}`);
+          });
+        }
 
         const osrmCoordinates = routeCoordinates
           .map((point) => `${point.lng},${point.lat}`)
