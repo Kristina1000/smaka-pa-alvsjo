@@ -14,6 +14,13 @@ type BikeTourMapProps = {
   restaurants: readonly Restaurant[];
 };
 
+const LOCATION_MAX_AGE_MS = 5000;
+const LOCATION_TIMEOUT_MS = 10000;
+const USER_LOCATION_MARKER_STROKE = "#1d4ed8";
+const USER_LOCATION_MARKER_FILL = "#3b82f6";
+const USER_ACCURACY_STROKE = "#60a5fa";
+const USER_ACCURACY_FILL = "#93c5fd";
+
 export default function BikeTourMap({
   startAddress,
   startCoordinates,
@@ -35,6 +42,11 @@ export default function BikeTourMap({
 
     let cancelled = false;
     let mapInstance: import("leaflet").Map | null = null;
+    let locationWatchId: number | null = null;
+    let userLocationMarker: import("leaflet").CircleMarker | null = null;
+    let userAccuracyCircle: import("leaflet").Circle | null = null;
+    let hasCenteredOnUser = false;
+    let removeLocationClickHandler: (() => void) | null = null;
 
     const run = async () => {
       try {
@@ -47,6 +59,107 @@ export default function BikeTourMap({
           zoomControl: true,
         });
         mapInstance = map;
+
+        const updateUserPosition = (position: GeolocationPosition) => {
+          const { latitude, longitude, accuracy } = position.coords;
+          const latLng = L.latLng(latitude, longitude);
+
+          if (!userLocationMarker) {
+            userLocationMarker = L.circleMarker(latLng, {
+              radius: 8,
+              color: USER_LOCATION_MARKER_STROKE,
+              fillColor: USER_LOCATION_MARKER_FILL,
+              fillOpacity: 0.9,
+              weight: 2,
+            }).addTo(map);
+          } else {
+            userLocationMarker.setLatLng(latLng);
+          }
+
+          if (!userAccuracyCircle) {
+            userAccuracyCircle = L.circle(latLng, {
+              radius: accuracy,
+              color: USER_ACCURACY_STROKE,
+              fillColor: USER_ACCURACY_FILL,
+              fillOpacity: 0.2,
+              weight: 1,
+            }).addTo(map);
+          } else {
+            userAccuracyCircle.setLatLng(latLng);
+            userAccuracyCircle.setRadius(accuracy);
+          }
+
+          if (!hasCenteredOnUser) {
+            map.flyTo(latLng, Math.max(map.getZoom(), 15));
+            hasCenteredOnUser = true;
+          }
+        };
+
+        const startLocationWatch = () => {
+          if (!("geolocation" in navigator)) {
+            setError("Din enhet stöder inte platstjänster.");
+            return;
+          }
+
+          if (locationWatchId !== null) {
+            if (userLocationMarker) {
+              map.flyTo(userLocationMarker.getLatLng(), Math.max(map.getZoom(), 15));
+            }
+            return;
+          }
+
+          setError(null);
+          locationWatchId = navigator.geolocation.watchPosition(
+            (position) => {
+              updateUserPosition(position);
+            },
+            (locationError) => {
+              if (locationWatchId !== null) {
+                navigator.geolocation.clearWatch(locationWatchId);
+                locationWatchId = null;
+              }
+
+              const message =
+                locationError.code === locationError.PERMISSION_DENIED
+                  ? "Tillåt platsåtkomst för att visa din position på kartan."
+                  : locationError.code === locationError.TIMEOUT
+                    ? "Platsförfrågan tog för lång tid. Försök igen."
+                    : locationError.code === locationError.POSITION_UNAVAILABLE
+                      ? "Din position kunde inte hittas. Kontrollera platsinställningar och försök igen."
+                      : "Kunde inte hämta din position just nu.";
+              setError(message);
+            },
+            {
+              enableHighAccuracy: true,
+              maximumAge: LOCATION_MAX_AGE_MS,
+              timeout: LOCATION_TIMEOUT_MS,
+            },
+          );
+        };
+
+        const locationControl = L.control({ position: "topright" });
+        locationControl.onAdd = () => {
+          const container = L.DomUtil.create("div", "leaflet-bar");
+          const button = L.DomUtil.create(
+            "button",
+            "map-location-button",
+            container,
+          ) as HTMLButtonElement;
+          button.type = "button";
+          button.title = "Visa min position";
+          button.setAttribute("aria-label", "Visa min position");
+          button.textContent = "📍";
+          L.DomEvent.disableClickPropagation(container);
+          const onLocationButtonClick = () => {
+            startLocationWatch();
+          };
+          L.DomEvent.on(button, "click", onLocationButtonClick);
+          removeLocationClickHandler = () => {
+            L.DomEvent.off(button, "click", onLocationButtonClick);
+          };
+          return container;
+        };
+        locationControl.addTo(map);
 
         L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: "&copy; OpenStreetMap contributors",
@@ -162,6 +275,12 @@ export default function BikeTourMap({
 
     return () => {
       cancelled = true;
+      if (locationWatchId !== null) {
+        navigator.geolocation.clearWatch(locationWatchId);
+      }
+      if (removeLocationClickHandler) {
+        removeLocationClickHandler();
+      }
       if (mapInstance) {
         mapInstance.remove();
       }
