@@ -20,6 +20,9 @@ type RestaurantFeedbackFormProps = {
 const storageKeyFor = (restaurantSlug: string) =>
   `smaka-feedback-${restaurantSlug}`;
 
+const submittedKeyFor = (restaurantSlug: string) =>
+  `smaka-feedback-submitted-${restaurantSlug}`;
+
 function readEntriesFromStorage(restaurantSlug: string): FeedbackEntry[] {
   if (typeof window === "undefined") {
     return [];
@@ -133,11 +136,15 @@ export default function RestaurantFeedbackForm({
   const [entries, setEntries] = useState<FeedbackEntry[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
       setEntries(readEntriesFromStorage(restaurantSlug));
+      setHasSubmitted(
+        Boolean(window.localStorage.getItem(submittedKeyFor(restaurantSlug))),
+      );
       setIsHydrated(true);
     });
 
@@ -158,6 +165,13 @@ export default function RestaurantFeedbackForm({
     event.preventDefault();
 
     const trimmedComment = comment.trim();
+
+    if (hasSubmitted) {
+      setStatusMessage(
+        "Du har redan skickat ett omdöme för den här restaurangen.",
+      );
+      return;
+    }
 
     if (rating === null) {
       setStatusMessage("Välj ett betyg mellan 1 och 10.");
@@ -191,6 +205,8 @@ export default function RestaurantFeedbackForm({
         storageKeyFor(restaurantSlug),
         JSON.stringify(nextEntries),
       );
+      window.localStorage.setItem(submittedKeyFor(restaurantSlug), "true");
+      setHasSubmitted(true);
     } catch {
       // localStorage not available
     }
@@ -219,6 +235,11 @@ export default function RestaurantFeedbackForm({
       </h2>
 
       <form className="mt-4 space-y-4" onSubmit={onSubmit}>
+        {hasSubmitted ? (
+          <p className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-900/30 dark:bg-emerald-900/10 dark:text-emerald-200">
+            Du har redan skickat ett omdöme för den här restaurangen.
+          </p>
+        ) : null}
         <fieldset className="space-y-2">
           <legend className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
             Totalbetyg (1-10)
@@ -238,6 +259,7 @@ export default function RestaurantFeedbackForm({
                   key={value}
                   type="button"
                   onClick={() => setRating(value)}
+                  disabled={hasSubmitted}
                   role="radio"
                   aria-checked={isChecked}
                   aria-label={`${value} av 10`}
@@ -265,14 +287,15 @@ export default function RestaurantFeedbackForm({
             value={comment}
             onChange={(event) => setComment(event.target.value)}
             rows={4}
-            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-400"
+            disabled={hasSubmitted}
+            className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-400 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-400 dark:disabled:bg-zinc-800"
             placeholder="Hur var maten, servicen och stämningen?"
           />
         </label>
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || hasSubmitted}
           className="inline-flex rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-900 hover:bg-amber-400 disabled:opacity-50 dark:bg-amber-400 dark:hover:bg-amber-300"
         >
           {submitting ? "Skickar..." : "Skicka omdöme"}
