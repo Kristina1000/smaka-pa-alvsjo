@@ -20,6 +20,11 @@ const USER_LOCATION_MARKER_STROKE = "#1d4ed8";
 const USER_LOCATION_MARKER_FILL = "#3b82f6";
 const USER_ACCURACY_STROKE = "#60a5fa";
 const USER_ACCURACY_FILL = "#93c5fd";
+const STOCKHOLM_WMS_URL =
+  "https://kartor.stockholm.se/bios/wms/app/baggis/web/WMS_STHLM_STOCKHOLMSKARTA_GRA";
+const STOCKHOLM_ATTRIBUTION =
+  "Kartbakgrund: Stockholms stad (WMS)";
+const OSM_ATTRIBUTION = "&copy; OpenStreetMap contributors";
 
 export default function BikeTourMap({
   startAddress,
@@ -168,10 +173,37 @@ export default function BikeTourMap({
         const locationControl = new LocationControl({ position: "topright" });
         map.addControl(locationControl);
 
-        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: "&copy; OpenStreetMap contributors",
+        const osmLayer = L.tileLayer(
+          "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+          {
+            attribution: OSM_ATTRIBUTION,
+            maxZoom: 19,
+          },
+        );
+
+        const stockholmLayer = L.tileLayer.wms(STOCKHOLM_WMS_URL, {
+          format: "image/png",
+          transparent: false,
+          version: "1.1.1",
+          attribution: STOCKHOLM_ATTRIBUTION,
           maxZoom: 19,
-        }).addTo(map);
+        });
+
+        let didFallbackToOsm = false;
+        const fallbackToOsm = () => {
+          if (didFallbackToOsm || cancelled) {
+            return;
+          }
+
+          didFallbackToOsm = true;
+          if (map.hasLayer(stockholmLayer)) {
+            map.removeLayer(stockholmLayer);
+          }
+          osmLayer.addTo(map);
+        };
+
+        stockholmLayer.on("tileerror", fallbackToOsm);
+        stockholmLayer.addTo(map);
 
         const startIcon = L.divIcon({
           className: "map-pin map-pin-start",
@@ -302,7 +334,7 @@ export default function BikeTourMap({
       />
       {error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}
       <p className="text-sm text-zinc-700 dark:text-zinc-400">
-        Karta och rutt visas med OpenStreetMap och fri cykel-routing.
+        Karta visas med Stockholmskartan (WMS), med fallback till OpenStreetMap.
       </p>
     </div>
   );
