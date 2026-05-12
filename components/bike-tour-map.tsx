@@ -20,17 +20,19 @@ const USER_LOCATION_MARKER_STROKE = "#1d4ed8";
 const USER_LOCATION_MARKER_FILL = "#3b82f6";
 const USER_ACCURACY_STROKE = "#60a5fa";
 const USER_ACCURACY_FILL = "#93c5fd";
-function getStockholmZoomThreshold() {
-  if (typeof window !== "undefined" && window.devicePixelRatio >= 2) {
-    return 15;
-  }
-  return 17;
-}
 const STOCKHOLM_WMS_URL =
   "https://kartor.stockholm.se/bios/wms/app/baggis/web/WMS_STHLM_STOCKHOLMSKARTA_GRA";
 const STOCKHOLM_ATTRIBUTION =
   "Kartbakgrund: Stockholms stad (WMS)";
 const OSM_ATTRIBUTION = "&copy; OpenStreetMap contributors";
+const CYCLOSM_ATTRIBUTION =
+  "&copy; OpenStreetMap contributors | &copy; CyclOSM";
+const GOKARTOR_ATTRIBUTION = "&copy; GoKartor AB";
+const GOKARTOR_TILE_URL = "https://kartor.gokartor.se/topo/{z}/{y}/{x}.png";
+const STOCKHOLM_CYKEL_WMS_URL =
+  "https://openstreetgs.stockholm.se/geoservice/api/717ec6af-49f9-4774-84da-35b8cb713dc5/wms";
+const STOCKHOLM_CYKEL_ATTRIBUTION = "&copy; Stockholms stad";
+
 
 export default function BikeTourMap({
   startAddress,
@@ -56,20 +58,54 @@ export default function BikeTourMap({
     let locationWatchId: number | null = null;
     let userLocationMarker: import("leaflet").CircleMarker | null = null;
     let userAccuracyCircle: import("leaflet").Circle | null = null;
-    let hasCenteredOnUser = false;
+    let isLocationTrackingActive = false;
     let removeLocationClickHandler: (() => void) | null = null;
+    let locationButton: HTMLButtonElement | null = null;
 
     const run = async () => {
       try {
         const L = await import("leaflet");
+        const proj4Module = await import("proj4");
+        const proj4 = (proj4Module.default ?? proj4Module) as unknown;
+
+        const leafletRuntime = ((L as unknown as { default?: unknown }).default ?? L) as typeof L;
+        (window as unknown as { L?: typeof L; proj4?: unknown }).L = leafletRuntime;
+        (window as unknown as { L?: typeof L; proj4?: unknown }).proj4 = proj4;
+
+        await import("proj4leaflet");
         if (cancelled || !mapRef.current || !restaurants.length) {
           return;
         }
 
-        const map = L.map(mapRef.current, {
+        const LRuntime = ((window as unknown as { L?: typeof L }).L ?? leafletRuntime) as typeof L;
+        const LWithProj = LRuntime as typeof LRuntime & {
+          Proj?: {
+            CRS: new (
+              code: string,
+              proj4def: string,
+              options: {
+                resolutions: number[];
+                origin: [number, number];
+              },
+            ) => import("leaflet").CRS;
+          };
+        };
+
+        const map = LRuntime.map(mapRef.current, {
           zoomControl: true,
         });
         mapInstance = map;
+        const defaultCrs = map.options.crs;
+        const goKartorCrs = LWithProj.Proj
+          ? new LWithProj.Proj.CRS(
+              "EPSG:3006",
+              "+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+              {
+                resolutions: [16384, 8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5],
+                origin: [265000, 7680000],
+              },
+            )
+          : null;
 
         const updateUserPosition = (position: GeolocationPosition) => {
           const { latitude, longitude, accuracy } = position.coords;
@@ -100,9 +136,23 @@ export default function BikeTourMap({
             userAccuracyCircle.setRadius(accuracy);
           }
 
-          if (!hasCenteredOnUser) {
+          if (isLocationTrackingActive) {
             map.flyTo(latLng, Math.max(map.getZoom(), 15));
-            hasCenteredOnUser = true;
+          }
+        };
+
+        const updateLocationButtonState = () => {
+          if (locationButton) {
+            const icon = locationButton.querySelector("i");
+            if (icon) {
+              icon.classList.remove("fa-regular");
+              icon.classList.add("fa-solid");
+            }
+            if (isLocationTrackingActive) {
+              locationButton.classList.add("location-active");
+            } else {
+              locationButton.classList.remove("location-active");
+            }
           }
         };
 
@@ -112,65 +162,73 @@ export default function BikeTourMap({
             return;
           }
 
-          if (locationWatchId !== null) {
-            if (userLocationMarker) {
-              map.flyTo(userLocationMarker.getLatLng(), Math.max(map.getZoom(), 15));
-            }
+          // Toggle tracking state
+          isLocationTrackingActive = !isLocationTrackingActive;
+          updateLocationButtonState();
+
+          if (!isLocationTrackingActive) {
+            setError(null);
             return;
           }
 
-          setError(null);
-          locationWatchId = navigator.geolocation.watchPosition(
-            (position) => {
-              updateUserPosition(position);
-            },
-            (locationError) => {
-              if (locationWatchId !== null) {
-                navigator.geolocation.clearWatch(locationWatchId);
-                locationWatchId = null;
-              }
+          if (locationWatchId === null) {
+            setError(null);
+            locationWatchId = navigator.geolocation.watchPosition(
+              (position) => {
+                updateUserPosition(position);
+              },
+              (locationError) => {
+                isLocationTrackingActive = false;
+                updateLocationButtonState();
 
-              const message =
-                locationError.code === locationError.PERMISSION_DENIED
-                  ? "Tillåt platsåtkomst för att visa din position på kartan."
-                  : locationError.code === locationError.TIMEOUT
-                    ? "Platsförfrågan tog för lång tid. Försök igen."
-                    : locationError.code === locationError.POSITION_UNAVAILABLE
-                      ? "Din position kunde inte hittas. Kontrollera platsinställningar och försök igen."
-                      : "Kunde inte hämta din position just nu.";
-              setError(message);
-            },
-            {
-              enableHighAccuracy: true,
-              maximumAge: LOCATION_MAX_AGE_MS,
-              timeout: LOCATION_TIMEOUT_MS,
-            },
-          );
+                if (locationWatchId !== null) {
+                  navigator.geolocation.clearWatch(locationWatchId);
+                  locationWatchId = null;
+                }
+
+                const message =
+                  locationError.code === locationError.PERMISSION_DENIED
+                    ? "Tillåt platsåtkomst för att visa din position på kartan."
+                    : locationError.code === locationError.TIMEOUT
+                      ? "Platsförfrågan tog för lång tid. Försök igen."
+                      : locationError.code === locationError.POSITION_UNAVAILABLE
+                        ? "Din position kunde inte hittas. Kontrollera platsinställningar och försök igen."
+                        : "Kunde inte hämta din position just nu.";
+                setError(message);
+              },
+              {
+                enableHighAccuracy: true,
+                maximumAge: LOCATION_MAX_AGE_MS,
+                timeout: LOCATION_TIMEOUT_MS,
+              },
+            );
+          }
         };
 
         const LocationControl = L.Control.extend({
           onAdd: () => {
             const container = L.DomUtil.create("div", "leaflet-bar");
-            const button = L.DomUtil.create(
+            locationButton = L.DomUtil.create(
               "button",
               "map-location-button",
               container,
             ) as HTMLButtonElement;
-            button.type = "button";
-            button.title = "Visa min position";
-            button.setAttribute("aria-label", "Visa min position");
+            locationButton.type = "button";
+            locationButton.title = "Visa och följ min position";
+            locationButton.setAttribute("aria-label", "Visa och följ min position");
 
-            const icon = L.DomUtil.create("i", "map-location-icon", button);
+            const icon = L.DomUtil.create("i", "map-location-icon fa-solid fa-location-arrow", locationButton);
             icon.setAttribute("aria-hidden", "true");
-            icon.classList.add("fa-solid", "fa-location-crosshairs");
 
             L.DomEvent.disableClickPropagation(container);
             const onLocationButtonClick = () => {
               startLocationWatch();
             };
-            L.DomEvent.on(button, "click", onLocationButtonClick);
+            L.DomEvent.on(locationButton, "click", onLocationButtonClick);
             removeLocationClickHandler = () => {
-              L.DomEvent.off(button, "click", onLocationButtonClick);
+              if (locationButton) {
+                L.DomEvent.off(locationButton, "click", onLocationButtonClick);
+              }
             };
             return container;
           },
@@ -178,6 +236,23 @@ export default function BikeTourMap({
 
         const locationControl = new LocationControl({ position: "topright" });
         map.addControl(locationControl);
+
+        // Only disable tracking if the user moves the map (not when following GPS)
+        let ignoreNextMove = false;
+        map.on("movestart", () => {
+          if (isLocationTrackingActive && !ignoreNextMove) {
+            isLocationTrackingActive = false;
+            updateLocationButtonState();
+          }
+        });
+
+        // When following GPS, set a flag to ignore the next move event
+        const flyToOriginal = map.flyTo.bind(map);
+        map.flyTo = function(...args: unknown[]) {
+          ignoreNextMove = true;
+          setTimeout(() => { ignoreNextMove = false; }, 500);
+          return flyToOriginal(...(args as [any]));
+        };
 
         const osmLayer = L.tileLayer(
           "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -187,6 +262,41 @@ export default function BikeTourMap({
           },
         );
 
+        const cyclOsmLayer = L.tileLayer(
+          "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
+          {
+            attribution: CYCLOSM_ATTRIBUTION,
+            maxZoom: 20,
+          },
+        );
+
+        const goKartorLayer = L.tileLayer(
+          GOKARTOR_TILE_URL,
+          {
+            attribution: GOKARTOR_ATTRIBUTION,
+            minZoom: 1,
+            maxZoom: 17,
+            minNativeZoom: 3,
+            maxNativeZoom: 14,
+            noWrap: true,
+            tms: false,
+          },
+        );
+
+        const stockholmCykelOverlayLayer = L.tileLayer.wms(STOCKHOLM_CYKEL_WMS_URL, {
+          layers: "od:LVD_FUNCTION_OBJECT_VIEW",
+          styles: "sld-slk-cykelkartan-cykelnat",
+          format: "image/png",
+          transparent: true,
+          version: "1.1.1",
+          uppercase: true,
+          attribution: STOCKHOLM_CYKEL_ATTRIBUTION,
+          maxZoom: 19,
+          ...( {
+            CQL_FILTER: "TRAFFIC_TYPES IN (2,10)",
+          } as Record<string, string>),
+        });
+
         const stockholmLayer = L.tileLayer.wms(STOCKHOLM_WMS_URL, {
           format: "image/png",
           transparent: false,
@@ -195,46 +305,72 @@ export default function BikeTourMap({
           maxZoom: 19,
         });
 
-        let stockholmUnavailable = false;
+        const stockholmCykelLayer = L.layerGroup([
+          stockholmLayer,
+          stockholmCykelOverlayLayer,
+        ]);
 
-        let stockholmZoomThreshold = getStockholmZoomThreshold();
-        // Re-evaluate on resize/zoom for dynamic devicePixelRatio changes
-        const syncBasemapForZoom = () => {
-          // Re-check threshold in case devicePixelRatio changed
-          stockholmZoomThreshold = getStockholmZoomThreshold();
-          const useStockholm =
-            !stockholmUnavailable && map.getZoom() >= stockholmZoomThreshold;
-
-          if (useStockholm) {
-            if (!map.hasLayer(stockholmLayer)) {
-              stockholmLayer.addTo(map);
-            }
-            if (map.hasLayer(osmLayer)) {
-              map.removeLayer(osmLayer);
-            }
-            return;
+        stockholmLayer.on("tileerror", () => {
+          if (!cancelled && map.hasLayer(stockholmLayer)) {
+            setError("Stockholms Stad (Standard) kunde inte laddas just nu.");
           }
+        });
 
-          if (!map.hasLayer(osmLayer)) {
-            osmLayer.addTo(map);
+        goKartorLayer.on("tileerror", () => {
+          if (!cancelled && map.hasLayer(goKartorLayer)) {
+            setError("GoKartor kunde inte laddas just nu.");
           }
-          if (map.hasLayer(stockholmLayer)) {
-            map.removeLayer(stockholmLayer);
+        });
+
+        stockholmCykelOverlayLayer.on("tileerror", () => {
+          if (!cancelled && map.hasLayer(stockholmCykelLayer)) {
+            setError("Stockholm Cykelkarta kunde inte laddas just nu.");
           }
-        };
+        });
 
-        const fallbackToOsm = () => {
-          if (stockholmUnavailable || cancelled) {
-            return;
-          }
-
-          stockholmUnavailable = true;
-          syncBasemapForZoom();
-        };
-
-        stockholmLayer.on("tileerror", fallbackToOsm);
-        map.on("zoomend", syncBasemapForZoom);
         osmLayer.addTo(map);
+
+        const baseLayers = {
+          OpenStreetMap: osmLayer,
+          CyclOSM: cyclOsmLayer,
+          "Gokartor": goKartorLayer,
+          "Stockholms Stad (Standard)": stockholmLayer,
+          "Stockholms Stad (Cykel)": stockholmCykelLayer,
+        };
+
+        const layerControl = L.control.layers(baseLayers, undefined, {
+          position: "topleft",
+          collapsed: true,
+        });
+        map.addControl(layerControl);
+
+        let usingGoKartorCrs = false;
+        map.on("baselayerchange", (event: import("leaflet").LayersControlEvent) => {
+          const currentZoom = map.getZoom();
+          const center = map.getCenter();
+
+          if (event.layer === goKartorLayer && !usingGoKartorCrs && goKartorCrs) {
+            const nextZoom = Math.max(6, Math.min(15, currentZoom - 3));
+            map.options.crs = goKartorCrs;
+            map.setView(center, nextZoom, { animate: false });
+            map.invalidateSize(false);
+            usingGoKartorCrs = true;
+            return;
+          }
+
+          if (event.layer === goKartorLayer && !goKartorCrs) {
+            setError("GoKartor visas utan projektionbyte (Proj4Leaflet ej tillgänglig).");
+            return;
+          }
+
+          if (usingGoKartorCrs && event.layer !== goKartorLayer) {
+            const nextZoom = Math.max(3, Math.min(19, currentZoom + 3));
+            map.options.crs = defaultCrs;
+            map.setView(center, nextZoom, { animate: false });
+            map.invalidateSize(false);
+            usingGoKartorCrs = false;
+          }
+        });
 
         const startIcon = L.divIcon({
           className: "map-pin map-pin-start",
@@ -335,14 +471,23 @@ export default function BikeTourMap({
           );
         }
 
-        L.polyline(routeLine, {
-          color: "#f59e0b",
+        // Draw route line with intense pink for GoKartor, otherwise default orange
+        let routeLineLayer: import("leaflet").Polyline | null = null;
+        const getRouteColor = () => (usingGoKartorCrs ? "#ff1ead" : "#f59e0b");
+        routeLineLayer = L.polyline(routeLine, {
+          color: getRouteColor(),
           weight: 5,
           opacity: 0.95,
         }).addTo(map);
 
+        // Listen for base layer changes to update route color
+        map.on("baselayerchange", (event: import("leaflet").LayersControlEvent) => {
+          if (routeLineLayer) {
+            routeLineLayer.setStyle({ color: event.layer === goKartorLayer ? "#ff1ead" : "#f59e0b" });
+          }
+        });
+
         map.fitBounds(boundsPoints, { padding: [24, 24] });
-        syncBasemapForZoom();
       } catch (err) {
         setError(err instanceof Error ? err.message : "Ett okänt fel uppstod.");
       }
@@ -372,7 +517,7 @@ export default function BikeTourMap({
       />
       {error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}
       <p className="text-sm text-zinc-700 dark:text-zinc-400">
-        Karta visas med Stockholmskartan (WMS), med fallback till OpenStreetMap.
+        Karta med flera lager. Välj karttyp via lagermenyn.
       </p>
     </div>
   );

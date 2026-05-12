@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",
+    "@types/proj4leaflet": "^1.0.12",
     "leaflet": "^1.9.4",
     "next": "16.2.6",
+    "proj4": "^2.20.8",
+    "proj4leaflet": "^1.0.2",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
