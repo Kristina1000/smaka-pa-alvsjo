@@ -92,7 +92,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
     restaurantsBySlug[groupRoute.endDestination.slug];
 
   return (
-    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+    <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-4 sm:px-6 lg:px-8">
       <SaveGroupToStorage group={group} />
       <header className="space-y-3">
         <div className="flex items-center gap-3">
