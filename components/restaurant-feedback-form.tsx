@@ -27,9 +27,17 @@ async function postToAppsScript(entry: FeedbackEntry): Promise<void> {
   const directUrl = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL;
 
   const sendViaApi = async (): Promise<void> => {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (directUrl) {
+      headers["x-apps-script-url"] = directUrl;
+    }
+
     const response = await fetch("/api/reviews", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(payload),
     });
 

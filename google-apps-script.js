@@ -56,9 +56,31 @@ function doPost(e) {
   }
 }
 
-// Required for CORS preflight from the browser
 function doGet() {
-  return ContentService.createTextOutput(
-    JSON.stringify({ ok: true, info: "Smaka pa Alvsjo feedback endpoint" }),
-  ).setMimeType(ContentService.MimeType.JSON);
+  try {
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+
+    if (!sheet || sheet.getLastRow() <= 1) {
+      return ContentService.createTextOutput(
+        JSON.stringify({ ok: true, reviews: [] }),
+      ).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const rows = sheet.getDataRange().getValues();
+    const reviews = rows.slice(1).map((row) => ({
+      timestamp: row[0] || "",
+      group: row[1] || "",
+      restaurantName: row[2] || "",
+      rating: row[3] ?? "",
+      comment: row[4] || "",
+    }));
+
+    return ContentService.createTextOutput(
+      JSON.stringify({ ok: true, reviews }),
+    ).setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ ok: false, error: String(err) }),
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
 }
