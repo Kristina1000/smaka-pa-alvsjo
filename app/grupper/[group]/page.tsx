@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import BikeTourMap from "@/components/bike-tour-map";
 import SaveGroupToStorage from "@/components/save-group-to-storage";
+import GroupStatisticsLink from "@/components/group-statistics-link";
 import {
   allGroupDefinitions,
   groupThemeBySlug,
@@ -130,7 +131,7 @@ export default async function GroupPage({ params }: GroupPageProps) {
             Stopp
           </h2>
           <ol className="mt-4 space-y-4">
-            {resolvedRestaurants.map(({ restaurant, ref }, index) => (
+            {resolvedRestaurants.map(({ restaurant, ref }) => (
               <li key={restaurant.slug}>
                 <Link
                   className="block space-y-1 rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 transition hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800/60 dark:hover:bg-zinc-800"
@@ -181,6 +182,8 @@ export default async function GroupPage({ params }: GroupPageProps) {
           </ol>
         </aside>
       </section>
+
+      <GroupStatisticsLink groupSlug={group} />
     </main>
   );
 }

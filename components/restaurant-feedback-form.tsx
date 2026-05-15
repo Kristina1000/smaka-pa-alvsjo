@@ -1,45 +1,19 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { readActiveGroup } from "@/components/save-group-to-storage";
-
-type FeedbackEntry = {
-  id: string;
-  group: string;
-  restaurantName: string;
-  rating: number;
-  comment: string;
-  createdAt: string;
-};
+import {
+  type FeedbackEntry,
+  hasSubmittedForRestaurant,
+  readEntriesFromStorage,
+  storageKeyFor,
+  submittedKeyFor,
+} from "@/lib/vote-storage";
 
 type RestaurantFeedbackFormProps = {
   restaurantSlug: string;
   restaurantName: string;
 };
-
-const storageKeyFor = (restaurantSlug: string) =>
-  `smaka-feedback-${restaurantSlug}`;
-
-const submittedKeyFor = (restaurantSlug: string) =>
-  `smaka-feedback-submitted-${restaurantSlug}`;
-
-function readEntriesFromStorage(restaurantSlug: string): FeedbackEntry[] {
-  if (typeof window === "undefined") {
-    return [];
-  }
-
-  try {
-    const raw = window.localStorage.getItem(storageKeyFor(restaurantSlug));
-    if (!raw) {
-      return [];
-    }
-
-    const parsed = JSON.parse(raw) as FeedbackEntry[];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
 
 async function postToAppsScript(entry: FeedbackEntry): Promise<void> {
   const payload = {
@@ -134,7 +108,6 @@ export default function RestaurantFeedbackForm({
   const [rating, setRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
   const [entries, setEntries] = useState<FeedbackEntry[]>([]);
-  const [isHydrated, setIsHydrated] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -142,24 +115,13 @@ export default function RestaurantFeedbackForm({
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
       setEntries(readEntriesFromStorage(restaurantSlug));
-      setHasSubmitted(
-        Boolean(window.localStorage.getItem(submittedKeyFor(restaurantSlug))),
-      );
-      setIsHydrated(true);
+      setHasSubmitted(hasSubmittedForRestaurant(restaurantSlug));
     });
 
     return () => {
       window.cancelAnimationFrame(frameId);
     };
   }, [restaurantSlug]);
-
-  const averageRating = useMemo(() => {
-    if (!entries.length) {
-      return null;
-    }
-    const total = entries.reduce((sum, entry) => sum + entry.rating, 0);
-    return (total / entries.length).toFixed(1);
-  }, [entries]);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
