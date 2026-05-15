@@ -20,106 +20,9 @@ type RestaurantStats = {
   histogram: number[];
 };
 
-type RestaurantTheme = {
-  cardGradient: string;
-  cardBorder: string;
-  cardShadow: string;
-  barGradient: string;
-  barShadow: string;
-  axisGradient: string;
-  accentText: string;
-};
-
 type ApiReview = {
   restaurantName?: string;
   rating?: number | string;
-};
-
-const ratingScale = Array.from({ length: 10 }, (_, index) => index + 1);
-
-const defaultTheme: RestaurantTheme = {
-  cardGradient: "bg-linear-to-br from-zinc-50 via-white to-zinc-100 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-800",
-  cardBorder: "border-zinc-200 dark:border-zinc-700",
-  cardShadow: "shadow-[0_18px_40px_-22px_rgba(15,23,42,0.45)]",
-  barGradient: "bg-linear-to-t from-zinc-500 to-zinc-300",
-  barShadow: "shadow-[0_8px_16px_-8px_rgba(63,63,70,0.8)]",
-  axisGradient: "bg-linear-to-b from-zinc-100 to-zinc-50 dark:from-zinc-800/80 dark:to-zinc-900/80",
-  accentText: "text-zinc-800 dark:text-zinc-200",
-};
-
-const restaurantThemes: Record<string, RestaurantTheme> = {
-  "casa-del-planka": {
-    cardGradient: "bg-linear-to-br from-orange-50 via-amber-50 to-yellow-100 dark:from-orange-950/40 dark:via-amber-950/30 dark:to-yellow-950/20",
-    cardBorder: "border-orange-200 dark:border-orange-900/40",
-    cardShadow: "shadow-[0_20px_46px_-24px_rgba(234,88,12,0.55)]",
-    barGradient: "bg-linear-to-t from-orange-600 to-amber-300",
-    barShadow: "shadow-[0_10px_18px_-10px_rgba(234,88,12,0.9)]",
-    axisGradient: "bg-linear-to-b from-orange-100 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/20",
-    accentText: "text-orange-900 dark:text-orange-200",
-  },
-  erssons: {
-    cardGradient: "bg-linear-to-br from-cyan-50 via-sky-50 to-blue-100 dark:from-cyan-950/40 dark:via-sky-950/30 dark:to-blue-950/20",
-    cardBorder: "border-cyan-200 dark:border-cyan-900/40",
-    cardShadow: "shadow-[0_20px_46px_-24px_rgba(6,182,212,0.5)]",
-    barGradient: "bg-linear-to-t from-cyan-600 to-sky-300",
-    barShadow: "shadow-[0_10px_18px_-10px_rgba(8,145,178,0.9)]",
-    axisGradient: "bg-linear-to-b from-cyan-100 to-sky-50 dark:from-cyan-950/30 dark:to-sky-950/20",
-    accentText: "text-cyan-900 dark:text-cyan-200",
-  },
-  teso: {
-    cardGradient: "bg-linear-to-br from-rose-50 via-pink-50 to-fuchsia-100 dark:from-rose-950/40 dark:via-pink-950/30 dark:to-fuchsia-950/20",
-    cardBorder: "border-rose-200 dark:border-rose-900/40",
-    cardShadow: "shadow-[0_20px_46px_-24px_rgba(244,63,94,0.5)]",
-    barGradient: "bg-linear-to-t from-rose-600 to-pink-300",
-    barShadow: "shadow-[0_10px_18px_-10px_rgba(225,29,72,0.9)]",
-    axisGradient: "bg-linear-to-b from-rose-100 to-pink-50 dark:from-rose-950/30 dark:to-pink-950/20",
-    accentText: "text-rose-900 dark:text-rose-200",
-  },
-  "var-pizza": {
-    cardGradient: "bg-linear-to-br from-red-50 via-orange-50 to-amber-100 dark:from-red-950/40 dark:via-orange-950/30 dark:to-amber-950/20",
-    cardBorder: "border-red-200 dark:border-red-900/40",
-    cardShadow: "shadow-[0_20px_46px_-24px_rgba(239,68,68,0.5)]",
-    barGradient: "bg-linear-to-t from-red-600 to-orange-300",
-    barShadow: "shadow-[0_10px_18px_-10px_rgba(220,38,38,0.9)]",
-    axisGradient: "bg-linear-to-b from-red-100 to-orange-50 dark:from-red-950/30 dark:to-orange-950/20",
-    accentText: "text-red-900 dark:text-red-200",
-  },
-  kottverket: {
-    cardGradient: "bg-linear-to-br from-stone-100 via-amber-50 to-orange-100 dark:from-stone-900 dark:via-amber-950/20 dark:to-orange-950/20",
-    cardBorder: "border-stone-300 dark:border-stone-700",
-    cardShadow: "shadow-[0_20px_46px_-24px_rgba(120,53,15,0.45)]",
-    barGradient: "bg-linear-to-t from-stone-700 to-amber-300",
-    barShadow: "shadow-[0_10px_18px_-10px_rgba(68,64,60,0.9)]",
-    axisGradient: "bg-linear-to-b from-stone-100 to-amber-50 dark:from-stone-900/70 dark:to-amber-950/20",
-    accentText: "text-stone-900 dark:text-stone-200",
-  },
-  rinos: {
-    cardGradient: "bg-linear-to-br from-violet-50 via-fuchsia-50 to-indigo-100 dark:from-violet-950/40 dark:via-fuchsia-950/25 dark:to-indigo-950/20",
-    cardBorder: "border-violet-200 dark:border-violet-900/40",
-    cardShadow: "shadow-[0_20px_46px_-24px_rgba(139,92,246,0.5)]",
-    barGradient: "bg-linear-to-t from-violet-600 to-fuchsia-300",
-    barShadow: "shadow-[0_10px_18px_-10px_rgba(124,58,237,0.9)]",
-    axisGradient: "bg-linear-to-b from-violet-100 to-fuchsia-50 dark:from-violet-950/30 dark:to-fuchsia-950/20",
-    accentText: "text-violet-900 dark:text-violet-200",
-  },
-  beirut: {
-    cardGradient: "bg-linear-to-br from-lime-50 via-emerald-50 to-green-100 dark:from-lime-950/30 dark:via-emerald-950/25 dark:to-green-950/20",
-    cardBorder: "border-lime-200 dark:border-lime-900/40",
-    cardShadow: "shadow-[0_20px_46px_-24px_rgba(132,204,22,0.5)]",
-    barGradient: "bg-linear-to-t from-lime-600 to-emerald-300",
-    barShadow: "shadow-[0_10px_18px_-10px_rgba(101,163,13,0.85)]",
-    axisGradient: "bg-linear-to-b from-lime-100 to-emerald-50 dark:from-lime-950/30 dark:to-emerald-950/20",
-    accentText: "text-lime-900 dark:text-lime-200",
-  },
-  "herrangens-gard": {
-    cardGradient: "bg-linear-to-br from-blue-50 via-sky-50 to-cyan-100 dark:from-blue-950/35 dark:via-sky-950/30 dark:to-cyan-950/20",
-    cardBorder: "border-blue-200 dark:border-blue-900/40",
-    cardShadow: "shadow-[0_20px_46px_-24px_rgba(59,130,246,0.5)]",
-    barGradient: "bg-linear-to-t from-blue-600 to-cyan-300",
-    barShadow: "shadow-[0_10px_18px_-10px_rgba(37,99,235,0.9)]",
-    axisGradient: "bg-linear-to-b from-blue-100 to-cyan-50 dark:from-blue-950/30 dark:to-cyan-950/20",
-    accentText: "text-blue-900 dark:text-blue-200",
-  },
 };
 
 function isGroupSlug(value: string): value is GroupSlug {
@@ -182,56 +85,84 @@ function buildRestaurantStats(reviews: ApiReview[]): RestaurantStats[] {
   return initialStats;
 }
 
-function RestaurantHistogram({ stats }: { stats: RestaurantStats }) {
-  const maxVotes = Math.max(1, ...stats.histogram);
-  const theme = restaurantThemes[stats.slug] ?? defaultTheme;
+function getAverageRating(stats: RestaurantStats): number {
+  if (stats.votes === 0) {
+    return 0;
+  }
+
+  const weightedSum = stats.histogram.reduce(
+    (sum, count, index) => sum + count * (index + 1),
+    0,
+  );
+
+  return weightedSum / stats.votes;
+}
+
+function AverageRatingByRestaurantChart({
+  allStats,
+}: {
+  allStats: RestaurantStats[];
+}) {
+  const sortedStats = [...allStats].sort((a, b) => {
+    const averageDiff = getAverageRating(b) - getAverageRating(a);
+    if (averageDiff !== 0) {
+      return averageDiff;
+    }
+
+    return b.votes - a.votes;
+  });
 
   return (
-    <article
-      className={`rounded-2xl border p-5 ${theme.cardGradient} ${theme.cardBorder} ${theme.cardShadow}`}
-    >
-      <header className="mb-4 flex items-center justify-between gap-3">
-        <h2 className={`text-lg font-semibold ${theme.accentText}`}>
-          {stats.name}
+    <section className="rounded-2xl border border-amber-200 bg-linear-to-br from-amber-50 via-yellow-50 to-amber-100 p-5 shadow-[0_20px_46px_-24px_rgba(202,138,4,0.55)] dark:border-amber-800/50 dark:from-amber-950/35 dark:via-yellow-950/25 dark:to-amber-900/20">
+      <header className="mb-4 space-y-1">
+        <h2 className="text-xl font-semibold text-amber-900 dark:text-amber-200">
+          Snittbetyg per restaurang
         </h2>
-        <p className={`text-sm ${theme.accentText}`}>
-          Röster: <span className="font-semibold">{stats.votes}</span>
+        <p className="text-sm text-amber-800 dark:text-amber-300">
+          X-axel: restaurang. Y-axel: genomsnittligt betyg (0 till 10). Röster visas ovanför varje stapel.
         </p>
       </header>
 
-      <div className="space-y-2">
-        <p className="text-xs font-medium uppercase tracking-wide text-zinc-600 dark:text-zinc-400">
-          Y-axel: antal röster
-        </p>
-        <div
-          className={`grid h-56 grid-cols-10 items-end gap-2 rounded-lg border p-3 ${theme.cardBorder} ${theme.axisGradient}`}
-        >
-          {ratingScale.map((rating) => {
-            const count = stats.histogram[rating - 1] ?? 0;
-            const heightPercent = (count / maxVotes) * 100;
+      <div className="rounded-xl border border-amber-200/80 bg-linear-to-b from-amber-100 to-yellow-50 p-3 dark:border-amber-800/40 dark:from-amber-950/20 dark:to-yellow-950/10">
+        <div className="grid h-96 grid-cols-8 items-end gap-1">
+          {sortedStats.map((stats) => {
+            const average = getAverageRating(stats);
+            const heightPercent = (average / 10) * 100;
 
             return (
-              <div key={rating} className="flex h-full flex-col items-center justify-end gap-1">
-                <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
-                  {count}
+              <div
+                key={stats.slug}
+                className="flex h-full min-w-0 flex-col items-center"
+                title={`${stats.name}: ${average.toFixed(1)} i snitt (${stats.votes} röster)`}
+              >
+                <div className="flex h-12 w-0 items-center justify-center">
+                  <span className="inline-block -rotate-90 whitespace-nowrap text-center rounded-full bg-amber-200/80 px-2 py-0.5 text-[9px] font-semibold text-amber-900 dark:bg-amber-700/40 dark:text-amber-100">
+                    {stats.votes} röster
+                  </span>
+                </div>
+                <span className="w-full text-center text-xs font-semibold text-amber-900 dark:text-amber-200">
+                  {average.toFixed(1)}
                 </span>
-                <div
-                  className={`w-full rounded-t transition-[height] ${theme.barGradient} ${theme.barShadow}`}
-                  style={{
-                    height: `${Math.max(heightPercent, count > 0 ? 8 : 2)}%`,
-                  }}
-                  aria-hidden="true"
-                />
-                <span className="text-xs text-zinc-600 dark:text-zinc-400">{rating}</span>
+                <div className="flex flex-1 items-end py-2">
+                  <div
+                    className="w-7 rounded-t-md bg-linear-to-t from-amber-600 via-yellow-400 to-amber-200 shadow-[0_10px_18px_-10px_rgba(180,83,9,0.85)]"
+                    style={{
+                      height: `${Math.max(heightPercent, stats.votes > 0 ? 8 : 2)}%`,
+                    }}
+                    aria-hidden="true"
+                  />
+                </div>
+                <div className="flex h-20 w-0 items-center justify-center">
+                  <span className="inline-block -rotate-90 whitespace-nowrap text-center text-[10px] font-medium leading-none text-amber-900 dark:text-amber-200">
+                    {stats.name}
+                  </span>
+                </div>
               </div>
             );
           })}
         </div>
-        <p className="text-xs font-medium uppercase tracking-wide text-zinc-600 dark:text-zinc-400">
-          X-axel: betyg 1 till 10
-        </p>
       </div>
-    </article>
+    </section>
   );
 }
 
@@ -373,11 +304,16 @@ export default function StatisticsPage() {
         </section>
       ) : null}
 
-      <section className="grid gap-5 md:grid-cols-1">
-        {restaurantStats.map((stats) => (
-          <RestaurantHistogram key={stats.slug} stats={stats} />
-        ))}
-      </section>
+      <AverageRatingByRestaurantChart allStats={restaurantStats} />
+
+      <div className="flex justify-end">
+        <Link
+          href="/statistik/detaljer"
+          className="inline-flex rounded-full bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        >
+          Visa detaljerad statistik
+        </Link>
+      </div>
     </main>
   );
 }
