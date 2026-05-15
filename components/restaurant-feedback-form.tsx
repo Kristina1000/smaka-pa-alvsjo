@@ -217,7 +217,7 @@ export default function RestaurantFeedbackForm({
             <div
               className="grid w-full grid-cols-10 gap-1 sm:gap-1.5"
               role="radiogroup"
-              aria-label="Valj betyg mellan 1 och 10"
+              aria-label="Välj betyg mellan 1 och 10"
             >
               {Array.from({ length: 10 }, (_, index) => {
                 const value = index + 1;

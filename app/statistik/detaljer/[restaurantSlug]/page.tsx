@@ -170,7 +170,7 @@ export default function RestaurantDetailsPage() {
           {restaurant.name}
         </h1>
         <p className="text-zinc-700 dark:text-zinc-300">
-          Visar alla inkomna omdomen med betyg och kommentarer.
+          Visar alla inkomna omdömen med betyg och kommentarer.
         </p>
       </header>
 
