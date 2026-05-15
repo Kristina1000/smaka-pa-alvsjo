@@ -98,18 +98,6 @@ function getAverageRating(stats: RestaurantStats): number {
   return weightedSum / stats.votes;
 }
 
-function getBarColor(average: number): string {
-  if (average >= 8) {
-    return "bg-green-500";
-  } else if (average >= 6) {
-    return "bg-yellow-400";
-  } else if (average >= 4) {
-    return "bg-orange-400";
-  } else {
-    return "bg-red-500";
-  }
-}
-
 function AverageRatingByRestaurantChart({
   allStats,
 }: {
@@ -123,9 +111,10 @@ function AverageRatingByRestaurantChart({
 
     return b.votes - a.votes;
   });
+  const leaderSlug = sortedStats[0]?.slug;
 
   return (
-    <section className="rounded-2xl border border-amber-200 bg-linear-to-br from-amber-50 via-yellow-50 to-amber-100 p-5 shadow-[0_20px_46px_-24px_rgba(202,138,4,0.55)] dark:border-amber-800/50 dark:from-amber-950/35 dark:via-yellow-950/25 dark:to-amber-900/20">
+    <section className="rounded-2xl border border-amber-200 bg-linear-to-br from-amber-100 via-orange-50 to-red-100 p-5 shadow-[0_20px_46px_-24px_rgba(202,138,4,0.55)] dark:border-amber-800/50 dark:from-amber-950/35 dark:via-orange-950/30 dark:to-red-950/20">
       <header className="mb-4 space-y-1">
         <h2 className="text-xl font-semibold text-amber-900 dark:text-amber-200">
           Snittbetyg per restaurang
@@ -135,11 +124,13 @@ function AverageRatingByRestaurantChart({
         </p>
       </header>
 
-      <div className="rounded-xl border border-amber-200/80 bg-linear-to-b from-amber-100 to-yellow-50 p-3 dark:border-amber-800/40 dark:from-amber-950/20 dark:to-yellow-950/10">
+      <div className="rounded-xl border border-amber-200/80 bg-linear-to-b from-amber-200 via-orange-100 to-yellow-50 p-3 dark:border-amber-800/40 dark:from-amber-950/25 dark:via-orange-950/20 dark:to-yellow-950/10">
         <div className="grid h-96 grid-cols-8 items-end gap-1">
           {sortedStats.map((stats) => {
             const average = getAverageRating(stats);
             const heightPercent = (average / 10) * 100;
+            const barOpacity = average / 10;
+            const isLeader = stats.slug === leaderSlug;
 
             return (
               <div
@@ -148,7 +139,13 @@ function AverageRatingByRestaurantChart({
                 title={`${stats.name}: ${average.toFixed(1)} i snitt (${stats.votes} röster)`}
               >
                 <div className="flex h-12 w-0 items-center justify-center">
-                  <span className="inline-block -rotate-90 whitespace-nowrap text-center rounded-full bg-amber-200/80 px-2 py-0.5 text-[9px] font-semibold text-amber-900 dark:bg-amber-700/40 dark:text-amber-100">
+                  <span
+                    className={`inline-block -rotate-90 whitespace-nowrap text-center rounded-full px-2 py-0.5 text-[9px] font-semibold ${
+                      isLeader
+                        ? "bg-orange-300 text-orange-950 shadow-[0_0_14px_rgba(249,115,22,0.85)] dark:bg-orange-700/50 dark:text-orange-100"
+                        : "bg-amber-200/80 text-amber-900 dark:bg-amber-700/40 dark:text-amber-100"
+                    }`}
+                  >
                     {stats.votes} röster
                   </span>
                 </div>
@@ -157,15 +154,20 @@ function AverageRatingByRestaurantChart({
                 </span>
                 <div className="flex flex-1 items-end py-2">
                   <div
-                    className={`w-7 rounded-t-md ${getBarColor(average)} shadow-[0_10px_18px_-10px_rgba(180,83,9,0.85)]`}
+                    className={`w-7 rounded-t-md bg-linear-to-t from-red-700 via-orange-500 to-amber-300 shadow-[0_10px_18px_-10px_rgba(180,83,9,0.85)] ${
+                      isLeader
+                        ? "ring-1 ring-orange-300/80 shadow-[0_0_18px_rgba(251,146,60,0.9),0_0_34px_rgba(239,68,68,0.55)]"
+                        : ""
+                    }`}
                     style={{
                       height: `${Math.max(heightPercent, stats.votes > 0 ? 8 : 2)}%`,
+                      opacity: barOpacity,
                     }}
                     aria-hidden="true"
                   />
                 </div>
-                <div className="flex h-20 w-0 items-center justify-center">
-                  <span className="inline-block -rotate-90 whitespace-nowrap text-center text-[10px] font-medium leading-none text-amber-900 dark:text-amber-200">
+                <div className="flex h-20 w-0 items-center justify-center pt-2">
+                  <span className="mt-2 inline-block -rotate-90 whitespace-nowrap text-center text-[10px] font-medium leading-none text-amber-900 dark:text-amber-200">
                     {stats.name}
                   </span>
                 </div>
@@ -252,9 +254,13 @@ export default function StatisticsPage() {
     };
 
     void loadSharedStats();
+    const refreshIntervalId = window.setInterval(() => {
+      void loadSharedStats();
+    }, 60_000);
 
     return () => {
       cancelled = true;
+      window.clearInterval(refreshIntervalId);
     };
   }, [hydrated, isUnlocked]);
 

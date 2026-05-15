@@ -323,9 +323,13 @@ export default function StatisticsDetailsPage() {
     };
 
     void loadSharedStats();
+    const refreshIntervalId = window.setInterval(() => {
+      void loadSharedStats();
+    }, 60_000);
 
     return () => {
       cancelled = true;
+      window.clearInterval(refreshIntervalId);
     };
   }, [hydrated, isUnlocked]);
 
