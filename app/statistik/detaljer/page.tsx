@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import LoadingSpinner from "@/components/loading-spinner";
 import { readActiveGroup } from "@/components/save-group-to-storage";
 import {
   allRestaurants,
@@ -255,6 +256,7 @@ export default function StatisticsDetailsPage() {
   const [apiReviews, setApiReviews] = useState<ApiReview[]>([]);
   const [loadingStats, setLoadingStats] = useState(false);
   const [statsError, setStatsError] = useState<string | null>(null);
+  const [hasLoadedStats, setHasLoadedStats] = useState(false);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -308,12 +310,14 @@ export default function StatisticsDetailsPage() {
 
         if (!cancelled) {
           setApiReviews(Array.isArray(payload.reviews) ? payload.reviews : []);
+          setHasLoadedStats(true);
         }
       } catch (error) {
         if (!cancelled) {
           setStatsError(
             error instanceof Error ? error.message : "Kunde inte hämta statistik.",
           );
+          setHasLoadedStats(true);
         }
       } finally {
         if (!cancelled) {
@@ -389,8 +393,8 @@ export default function StatisticsDetailsPage() {
         </p>
       </header>
 
-      {loadingStats ? (
-        <p className="text-sm text-zinc-700 dark:text-zinc-300">Hämtar statistik från Google Sheets...</p>
+      {loadingStats && !hasLoadedStats ? (
+        <LoadingSpinner label="Hämtar statistik från Google Sheets..." />
       ) : null}
 
       {statsError ? (
@@ -399,18 +403,20 @@ export default function StatisticsDetailsPage() {
         </section>
       ) : null}
 
-      <section className="grid gap-5 md:grid-cols-1">
-        {restaurantStats.map((stats) => (
-          <Link
-            key={stats.slug}
-            href={`/statistik/detaljer/${stats.slug}`}
-            className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
-            aria-label={`Visa recensioner för ${stats.name}`}
-          >
-            <RestaurantHistogram stats={stats} />
-          </Link>
-        ))}
-      </section>
+      {hasLoadedStats ? (
+        <section className="grid gap-5 md:grid-cols-1">
+          {restaurantStats.map((stats) => (
+            <Link
+              key={stats.slug}
+              href={`/statistik/detaljer/${stats.slug}`}
+              className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
+              aria-label={`Visa recensioner för ${stats.name}`}
+            >
+              <RestaurantHistogram stats={stats} />
+            </Link>
+          ))}
+        </section>
+      ) : null}
     </main>
   );
 }

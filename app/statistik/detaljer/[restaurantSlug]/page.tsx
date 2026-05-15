@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import LoadingSpinner from "@/components/loading-spinner";
 import { allRestaurants } from "@/lib/tour-data";
 
 type ApiReview = {
@@ -45,6 +46,7 @@ export default function RestaurantDetailsPage() {
   const [entries, setEntries] = useState<ApiReview[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [reviewsError, setReviewsError] = useState<string | null>(null);
+  const [hasLoadedReviews, setHasLoadedReviews] = useState(false);
 
   const restaurant = allRestaurants.find((r) => r.slug === restaurantSlug);
 
@@ -116,6 +118,7 @@ export default function RestaurantDetailsPage() {
 
         if (!cancelled) {
           setEntries(filtered);
+          setHasLoadedReviews(true);
         }
       } catch (error) {
         if (!cancelled) {
@@ -124,6 +127,7 @@ export default function RestaurantDetailsPage() {
               ? error.message
               : "Kunde inte hämta recensioner.",
           );
+          setHasLoadedReviews(true);
         }
       } finally {
         if (!cancelled) {
@@ -174,8 +178,8 @@ export default function RestaurantDetailsPage() {
         </p>
       </header>
 
-      {loadingReviews ? (
-        <p className="text-sm text-zinc-700 dark:text-zinc-300">Hämtar recensioner...</p>
+      {loadingReviews && !hasLoadedReviews ? (
+        <LoadingSpinner label="Hämtar recensioner..." />
       ) : null}
 
       {reviewsError ? (
@@ -184,11 +188,11 @@ export default function RestaurantDetailsPage() {
         </section>
       ) : null}
 
-      {entries.length === 0 ? (
+      {hasLoadedReviews && entries.length === 0 ? (
         <section className="rounded-2xl border border-zinc-200 bg-white p-5 text-sm text-zinc-700 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
           Inga omdömen hittades för den här restaurangen ännu.
         </section>
-      ) : (
+      ) : hasLoadedReviews ? (
         <ul className="space-y-4">
           {entries.map((entry) => (
             <li
@@ -215,7 +219,7 @@ export default function RestaurantDetailsPage() {
             </li>
           ))}
         </ul>
-      )}
+      ) : null}
     </main>
   );
 }

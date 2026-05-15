@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import LoadingSpinner from "@/components/loading-spinner";
 import { readActiveGroup } from "@/components/save-group-to-storage";
 import {
   allRestaurants,
@@ -186,6 +187,7 @@ export default function StatisticsPage() {
   const [apiReviews, setApiReviews] = useState<ApiReview[]>([]);
   const [loadingStats, setLoadingStats] = useState(false);
   const [statsError, setStatsError] = useState<string | null>(null);
+  const [hasLoadedStats, setHasLoadedStats] = useState(false);
 
   useEffect(() => {
     const frameId = window.requestAnimationFrame(() => {
@@ -239,12 +241,14 @@ export default function StatisticsPage() {
 
         if (!cancelled) {
           setApiReviews(Array.isArray(payload.reviews) ? payload.reviews : []);
+          setHasLoadedStats(true);
         }
       } catch (error) {
         if (!cancelled) {
           setStatsError(
             error instanceof Error ? error.message : "Kunde inte hämta statistik.",
           );
+          setHasLoadedStats(true);
         }
       } finally {
         if (!cancelled) {
@@ -321,8 +325,8 @@ export default function StatisticsPage() {
         </Link>
       </div>
 
-      {loadingStats ? (
-        <p className="text-sm text-zinc-700 dark:text-zinc-300">Hämtar statistik från Google Sheets...</p>
+      {loadingStats && !hasLoadedStats ? (
+        <LoadingSpinner label="Hämtar statistik från Google Sheets..." />
       ) : null}
 
       {statsError ? (
@@ -331,16 +335,20 @@ export default function StatisticsPage() {
         </section>
       ) : null}
 
-      <AverageRatingByRestaurantChart allStats={restaurantStats} />
+      {hasLoadedStats ? (
+        <>
+          <AverageRatingByRestaurantChart allStats={restaurantStats} />
 
-      <div className="flex justify-end">
-        <Link
-          href="/statistik/detaljer"
-          className="inline-flex rounded-full bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-        >
-          Visa detaljerad statistik
-        </Link>
-      </div>
+          <div className="flex justify-end">
+            <Link
+              href="/statistik/detaljer"
+              className="inline-flex rounded-full bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+            >
+              Visa detaljerad statistik
+            </Link>
+          </div>
+        </>
+      ) : null}
     </main>
   );
 }
