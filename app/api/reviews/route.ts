@@ -73,6 +73,23 @@ function normalizeReviews(payload: unknown): ReviewPayload[] {
   }, []);
 }
 
+function hasReviewArray(payload: unknown): boolean {
+  if (Array.isArray(payload)) {
+    return true;
+  }
+
+  if (typeof payload !== "object" || payload === null) {
+    return false;
+  }
+
+  const source = payload as { reviews?: unknown; rows?: unknown; data?: unknown };
+  return (
+    Array.isArray(source.reviews) ||
+    Array.isArray(source.rows) ||
+    Array.isArray(source.data)
+  );
+}
+
 function getAppsScriptUrl(request?: Request): string | null {
   const envUrl =
     process.env.APPS_SCRIPT_URL ?? process.env.NEXT_PUBLIC_APPS_SCRIPT_URL;
@@ -225,6 +242,33 @@ export async function GET(request: Request) {
       parsed = JSON.parse(upstreamText);
     } catch {
       parsed = null;
+    }
+
+    if (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      (parsed as { ok?: unknown }).ok === false
+    ) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Apps Script returned ok:false for GET /reviews.",
+          details: parsed,
+        },
+        { status: 502 },
+      );
+    }
+
+    if (!hasReviewArray(parsed)) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error:
+            "Apps Script GET returned unexpected format. Expected { ok: true, reviews: [...] }. This usually means the deployed Apps Script version is outdated.",
+          details: parsed,
+        },
+        { status: 502 },
+      );
     }
 
     return NextResponse.json({
