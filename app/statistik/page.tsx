@@ -98,6 +98,18 @@ function getAverageRating(stats: RestaurantStats): number {
   return weightedSum / stats.votes;
 }
 
+function getBarColor(average: number): string {
+  if (average >= 8) {
+    return "bg-green-500";
+  } else if (average >= 6) {
+    return "bg-yellow-400";
+  } else if (average >= 4) {
+    return "bg-orange-400";
+  } else {
+    return "bg-red-500";
+  }
+}
+
 function AverageRatingByRestaurantChart({
   allStats,
 }: {
@@ -145,7 +157,7 @@ function AverageRatingByRestaurantChart({
                 </span>
                 <div className="flex flex-1 items-end py-2">
                   <div
-                    className="w-7 rounded-t-md bg-linear-to-t from-amber-600 via-yellow-400 to-amber-200 shadow-[0_10px_18px_-10px_rgba(180,83,9,0.85)]"
+                    className={`w-7 rounded-t-md ${getBarColor(average)} shadow-[0_10px_18px_-10px_rgba(180,83,9,0.85)]`}
                     style={{
                       height: `${Math.max(heightPercent, stats.votes > 0 ? 8 : 2)}%`,
                     }}
@@ -293,6 +305,15 @@ export default function StatisticsPage() {
           Stapeldiagram över hur rösterna fördelar sig för varje restaurang, summerat för alla grupper.
         </p>
       </header>
+
+      <div className="flex justify-start mb-4">
+        <Link
+          href="/"
+          className="inline-flex rounded-full bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        >
+          Tillbaka
+        </Link>
+      </div>
 
       {loadingStats ? (
         <p className="text-sm text-zinc-700 dark:text-zinc-300">Hämtar statistik från Google Sheets...</p>

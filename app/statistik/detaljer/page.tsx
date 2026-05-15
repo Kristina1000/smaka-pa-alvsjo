@@ -180,6 +180,19 @@ function buildRestaurantStats(reviews: ApiReview[]): RestaurantStats[] {
   return initialStats;
 }
 
+function getAverageRating(stats: RestaurantStats): number {
+  if (stats.votes === 0) {
+    return 0;
+  }
+
+  const weightedSum = stats.histogram.reduce(
+    (sum, count, index) => sum + count * (index + 1),
+    0,
+  );
+
+  return weightedSum / stats.votes;
+}
+
 function RestaurantHistogram({ stats }: { stats: RestaurantStats }) {
   const maxVotes = Math.max(1, ...stats.histogram);
   const theme = restaurantThemes[stats.slug] ?? defaultTheme;
@@ -227,6 +240,9 @@ function RestaurantHistogram({ stats }: { stats: RestaurantStats }) {
         </div>
         <p className="text-xs font-medium uppercase tracking-wide text-zinc-600 dark:text-zinc-400">
           X-axel: betyg 1 till 10
+        </p>
+        <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          Genomsnittligt betyg: {getAverageRating(stats).toFixed(1)}
         </p>
       </div>
     </article>
@@ -381,7 +397,14 @@ export default function StatisticsDetailsPage() {
 
       <section className="grid gap-5 md:grid-cols-1">
         {restaurantStats.map((stats) => (
-          <RestaurantHistogram key={stats.slug} stats={stats} />
+          <Link
+            key={stats.slug}
+            href={`/statistik/detaljer/${stats.slug}`}
+            className="block rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-zinc-900"
+            aria-label={`Visa recensioner för ${stats.name}`}
+          >
+            <RestaurantHistogram stats={stats} />
+          </Link>
         ))}
       </section>
     </main>
