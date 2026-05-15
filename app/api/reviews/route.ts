@@ -260,15 +260,20 @@ export async function GET(request: Request) {
     }
 
     if (!hasReviewArray(parsed)) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error:
-            "Apps Script GET returned unexpected format. Expected { ok: true, reviews: [...] }. This usually means the deployed Apps Script version is outdated.",
-          details: parsed,
-        },
-        { status: 502 },
-      );
+      try {
+        const reviews = await fetchReviewsFromSheet();
+        return NextResponse.json({ ok: true, reviews });
+      } catch {
+        return NextResponse.json(
+          {
+            ok: false,
+            error:
+              "Apps Script GET returned unexpected format. Expected { ok: true, reviews: [...] }. This usually means the deployed Apps Script version is outdated.",
+            details: parsed,
+          },
+          { status: 502 },
+        );
+      }
     }
 
     return NextResponse.json({
